@@ -12,12 +12,12 @@ const SQRT3 = Math.sqrt(3);
 let canvas, ctx, hexagons = [], rafId = null;
 
 function readThemeColors() {
-  // Dezenter Hintergrund — schimmert nur leicht durch die Glas-Cards.
+  // Sehr dezent — sollen nur ganz leicht durchscheinen.
   const dark = isDark();
   return {
-    line: dark ? '#F5841F' : '#F5841F',
-    shadow: dark ? 'rgba(245,132,31,0.35)' : 'rgba(36,83,152,0.25)',
-    alpha: dark ? 0.35 : 0.45
+    line: dark ? '#F5841F' : '#245398',
+    shadow: dark ? 'rgba(245,132,31,0.18)' : 'rgba(36,83,152,0.12)',
+    alpha: dark ? 0.18 : 0.22
   };
 }
 

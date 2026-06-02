@@ -129,16 +129,16 @@
     </section>
   </main>
 
-  <!-- Sprechblase: weist auf den Sicherheits-Link im Footer hin -->
-  <div id="security-hint" class="security-hint" role="note">
-    <button class="security-hint__close" type="button" aria-label="Schließen">×</button>
-    <span class="security-hint__icon" aria-hidden="true">🔒</span>
-    <span class="security-hint__text" data-i18n="securityHint.text">Wie sicher ist das?</span>
-    <a href="/sicherheit.html" class="security-hint__link" data-i18n="securityHint.link">Erfahren Sie mehr</a>
-  </div>
-
   <footer class="site-footer">
-    <a href="/sicherheit.html" class="footer-security-link" data-i18n="footer.security">Sicherheit</a>
+    <span class="footer-security-wrap">
+      <a href="/sicherheit.html" class="footer-security-link" data-i18n="footer.security">Sicherheit</a>
+      <!-- Sprechblase sitzt direkt über dem "Sicherheit"-Link, Pfeil zeigt drauf -->
+      <span id="security-hint" class="security-hint" role="note">
+        <button class="security-hint__close" type="button" aria-label="Schließen">×</button>
+        <span class="security-hint__icon" aria-hidden="true">🔒</span>
+        <span class="security-hint__text" data-i18n="securityHint.text">Wie sicher ist das?</span>
+      </span>
+    </span>
     <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
     <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
     <span class="brand__title">© BYTEXX IT</span>

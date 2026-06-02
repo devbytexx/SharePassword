@@ -42,6 +42,7 @@
   --card:      #ffffff;
   --card-glass: rgba(255, 255, 255, 0.55);
   --border:    rgba(195, 205, 220, 0.6);
+  --border-glass: rgba(36, 83, 152, 0.28);
   --border-strong: #c8d0dc;
 
   /* Text */
@@ -74,6 +75,7 @@
     --card:         #1a2236;
     --card-glass:   rgba(26, 34, 54, 0.45);
     --border:       rgba(60, 75, 100, 0.55);
+    --border-glass: rgba(245, 132, 31, 0.32);
     --border-strong:#3a455c;
     --fg:           #f2f4f8;
     --fg-muted:     #a8b0c0;
@@ -90,6 +92,7 @@
   --card:         #1a2236;
   --card-glass:   rgba(26, 34, 54, 0.45);
   --border:       rgba(60, 75, 100, 0.55);
+  --border-glass: rgba(245, 132, 31, 0.32);
   --border-strong:#3a455c;
   --fg:           #f2f4f8;
   --fg-muted:     #a8b0c0;
@@ -106,7 +109,15 @@ body {
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
   line-height: 1.55;
-  background: linear-gradient(180deg, var(--bg-grad-from) 0%, var(--bg-grad-to) 100%);
+  /* Mehrschichtiger Verlauf:
+     - radial-gradient oben-links: zarter Blau-Glow (BYTEXX)
+     - radial-gradient unten-rechts: zarter Orange-Glow (BYTEXX)
+     - linear-gradient: Grundton von hell oben nach dunkler unten */
+  background:
+    radial-gradient(circle at 18% 12%, rgba(36, 83, 152, 0.22), transparent 55%),
+    radial-gradient(circle at 88% 92%, rgba(245, 132, 31, 0.12), transparent 50%),
+    linear-gradient(180deg, var(--bg-grad-from) 0%, var(--bg-grad-to) 100%);
+  background-attachment: fixed;
   color: var(--fg);
   min-height: 100vh;
   display: flex;
@@ -235,15 +246,17 @@ main.page {
 /* ====== Card — Glassmorphism ====== */
 .card {
   background: var(--card-glass, rgba(255, 255, 255, 0.55));
-  border: 1px solid var(--border);
+  /* Klar definierter Rand — hebt die Karte deutlich vom Background ab */
+  border: 1.5px solid var(--border-glass, rgba(36, 83, 152, 0.35));
   border-radius: var(--radius-lg);
   box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 12px 40px rgba(15, 30, 60, 0.18),
+    0 2px 6px rgba(15, 30, 60, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   padding: 1.75rem;
-  /* Frosted-glass-Effekt: starker Blur, Hexagons schimmern nur sanft durch */
-  -webkit-backdrop-filter: blur(36px) saturate(180%);
-  backdrop-filter: blur(36px) saturate(180%);
+  /* Sehr starker Frost-Blur: Hintergrund verschwimmt fast komplett */
+  -webkit-backdrop-filter: blur(60px) saturate(200%);
+  backdrop-filter: blur(60px) saturate(200%);
   position: relative;
 }
 .card + .card { margin-top: 1.25rem; }
@@ -576,60 +589,57 @@ pre.plaintext {
 }
 
 /* ====== Sicherheits-Sprechblase ====== */
+/* Wrapper im Footer trägt position:relative, damit die Bubble absolut
+   exakt über dem "Sicherheit"-Link sitzt. */
+.footer-security-wrap {
+  position: relative;
+  display: inline-block;
+}
 .security-hint {
-  position: fixed;
-  left: 1.25rem;
-  bottom: 4.5rem;     /* sitzt über dem Footer */
-  z-index: 100;
+  position: absolute;
+  bottom: calc(100% + 14px);     /* über dem Link, etwas Luft für den Pfeil */
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   gap: 0.55rem;
-  padding: 0.65rem 0.95rem 0.65rem 0.85rem;
+  padding: 0.55rem 0.85rem 0.55rem 0.75rem;
   background: var(--brand-blue);
   color: #fff;
   border-radius: 999px;
-  box-shadow: var(--shadow-lg);
-  font-size: 0.88rem;
+  box-shadow: 0 8px 24px rgba(15, 30, 60, 0.25);
+  font-size: 0.85rem;
   font-weight: 700;
+  z-index: 50;
   animation: hint-pop 0.4s ease-out 0.4s both,
              hint-bob 2.6s ease-in-out 1.2s infinite;
-  transform-origin: bottom left;
 }
 .security-hint::after {
-  /* Pfeil nach unten, zeigt auf den Footer-Link "Sicherheit" */
+  /* Pfeil nach unten — mittig zentriert, zeigt direkt auf den Link darunter */
   content: "";
   position: absolute;
-  left: 1.6rem;
-  bottom: -7px;
-  width: 14px;
-  height: 14px;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
   background: var(--brand-blue);
-  transform: rotate(45deg);
   border-bottom-right-radius: 3px;
-  box-shadow: 3px 3px 6px rgba(0,0,0,0.12);
 }
-.security-hint__icon {
-  font-size: 1.05rem;
-  line-height: 1;
-}
+.security-hint__icon { font-size: 1rem; line-height: 1; }
 .security-hint__text { color: #fff; }
-.security-hint__link {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  margin-left: 0.15rem;
-}
-.security-hint__link:hover { color: #fff; opacity: 0.85; }
 .security-hint__close {
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1;
   cursor: pointer;
-  padding: 0 0.15rem;
-  margin-right: 0.1rem;
+  padding: 0 0.1rem;
+  margin-left: 0.15rem;
   opacity: 0.7;
+  order: 99;   /* close-Button ans Ende der flex-Reihe */
 }
 .security-hint__close:hover { opacity: 1; }
 .security-hint.is-hidden { display: none; }
@@ -643,27 +653,16 @@ pre.plaintext {
 }
 
 @keyframes hint-pop {
-  from { opacity: 0; transform: translateY(8px) scale(0.92); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.92); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 @keyframes hint-bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-3px); }
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-3px); }
 }
 
-@media (max-width: 480px) {
-  .security-hint {
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 4.5rem;
-    border-radius: var(--radius-lg);
-    justify-content: center;
-    text-align: center;
-    flex-wrap: wrap;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .security-hint { animation: none; }
+  .security-hint { animation: hint-pop 0.4s ease-out both; }
 }
 
 /* ====== Tabellen (Sicherheits-Seite) ====== */
