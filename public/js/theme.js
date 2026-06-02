@@ -4,12 +4,13 @@
 const KEY = 'sp.theme';
 
 export function currentTheme() {
-  return localStorage.getItem(KEY) || 'auto';
+  return localStorage.getItem(KEY) || 'dark';   // BYTEXX-Default: Dark
 }
 
 export function effectiveTheme() {
   const t = currentTheme();
   if (t === 'light' || t === 'dark') return t;
+  // 'auto' ist möglich (über JS gesetzt), folgt dann System
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 

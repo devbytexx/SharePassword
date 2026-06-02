@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SharePassword – BYTEXX</title>
+  <script src="/js/theme-init.js"></script>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
@@ -59,17 +60,21 @@
 
         <details class="advanced">
           <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
+          <p class="advanced__lead" data-i18n="create.advancedLead"></p>
           <label class="field">
             <span data-i18n="create.passphraseLabel">Passphrase (optional)</span>
             <input type="password" id="passphrase" autocomplete="new-password">
+            <small class="field__help" data-i18n="create.passphraseHelp"></small>
           </label>
           <label class="field">
             <span data-i18n="create.notifyLabel">Benachrichtigungs-E-Mail (optional)</span>
             <input type="email" id="notify-email">
+            <small class="field__help" data-i18n="create.notifyHelp"></small>
           </label>
           <label class="field">
             <span data-i18n="create.hintLabel">Hinweis für den Empfänger (sichtbar vor Entschlüsselung)</span>
             <input type="text" id="sender-hint" maxlength="120">
+            <small class="field__help" data-i18n="create.hintHelp"></small>
           </label>
         </details>
 

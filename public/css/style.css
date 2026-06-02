@@ -40,6 +40,7 @@
   --bg-grad-from: #eef2f9;
   --bg-grad-to:   #f7f8fb;
   --card:      #ffffff;
+  --card-glass: rgba(255, 255, 255, 0.7);
   --border:    #e3e7ee;
   --border-strong: #c8d0dc;
 
@@ -71,6 +72,7 @@
     --bg-grad-from: #0f1623;
     --bg-grad-to:   #1a2236;
     --card:         #1a2236;
+    --card-glass:   rgba(26, 34, 54, 0.62);
     --border:       #2a3447;
     --border-strong:#3a455c;
     --fg:           #f2f4f8;
@@ -86,6 +88,7 @@
   --bg-grad-from: #0f1623;
   --bg-grad-to:   #1a2236;
   --card:         #1a2236;
+  --card-glass:   rgba(26, 34, 54, 0.62);
   --border:       #2a3447;
   --border-strong:#3a455c;
   --fg:           #f2f4f8;
@@ -124,9 +127,14 @@ body {
 
 /* ====== Header ====== */
 .site-header {
-  background: var(--card);
+  background: var(--card-glass);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .site-header { background: var(--card); }
 }
 .site-header__inner {
   max-width: 1080px;
@@ -224,13 +232,20 @@ main.page {
   margin: 0;
 }
 
-/* ====== Card ====== */
+/* ====== Card — Glassmorphism ====== */
 .card {
-  background: var(--card);
+  background: var(--card-glass, rgba(255, 255, 255, 0.62));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   padding: 1.75rem;
+  /* Frosted-glass-Effekt: lässt das Hexagon-Pattern durch */
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+}
+/* Fallback wenn backdrop-filter nicht unterstützt wird */
+@supports not (backdrop-filter: blur(1px)) {
+  .card { background: var(--card); }
 }
 @media (max-width: 480px) {
   .card { padding: 1.25rem; border-radius: 0; border-left: none; border-right: none; }
@@ -327,6 +342,18 @@ details.advanced[open] {
   padding-bottom: 0.5rem;
 }
 details.advanced > .field { margin-left: 0.95rem; margin-right: 0.95rem; }
+details.advanced > .advanced__lead {
+  margin: 0.25rem 0.95rem 1rem;
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+}
+.field__help {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
 
 /* ====== Buttons ====== */
 .btn {
@@ -474,7 +501,9 @@ pre.plaintext {
 /* ====== Footer ====== */
 .site-footer {
   border-top: 1px solid var(--border);
-  background: var(--card);
+  background: var(--card-glass);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
   padding: 1.25rem 1.5rem;
   text-align: center;
   font-size: 0.85rem;
