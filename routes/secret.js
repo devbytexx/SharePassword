@@ -14,7 +14,7 @@ const createSchema = {
     required: ['ciphertext', 'expiresIn', 'burnAfterRead', 'hasPassphrase'],
     additionalProperties: false,
     properties: {
-      ciphertext:     { type: 'string', minLength: 1, maxLength: 7 * 1024 * 1024 },
+      ciphertext:     { type: 'string', minLength: 1, maxLength: 34 * 1024 * 1024 },
       expiresIn:      { type: 'integer', enum: [3600, 86400, 604800, 2592000] },
       burnAfterRead:  { type: 'boolean' },
       hasPassphrase:  { type: 'boolean' },
@@ -66,7 +66,7 @@ export default async function secretRoutes(app) {
 
     const ciphertext = Buffer.from(b.ciphertext, 'base64');
     if (ciphertext.length === 0) return reply.code(400).send({ error: 'empty ciphertext' });
-    if (ciphertext.length > 5 * 1024 * 1024 + 1024) {
+    if (ciphertext.length > 25 * 1024 * 1024 + 4096) {
       return reply.code(413).send({ error: 'ciphertext too large' });
     }
 

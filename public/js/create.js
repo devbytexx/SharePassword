@@ -7,12 +7,13 @@ import { initThemeToggle } from '/js/theme.js';
 
 initThemeToggle();
 
-const MAX_FILE_BYTES = 5 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 25 * 1024 * 1024;   // Summe aller Dateien
 
 let strings = {};
 let currentLangCode = 'de';
 let turnstileWidgetId = null;
 let turnstileSiteKey = null;
+let selectedFiles = [];   // Array von File-Objekten
 
 (async () => {
   currentLangCode = currentLang();
@@ -84,27 +85,73 @@ function getTurnstileToken() {
   return window.turnstile.getResponse(turnstileWidgetId) || null;
 }
 
+function formatSize(bytes) {
+  if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  if (bytes >= 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return bytes + ' B';
+}
+
 function setupDropzone() {
   const zone = document.getElementById('dropzone');
   const input = document.getElementById('file');
-  const fileLabel = document.getElementById('dropzone-file');
+  const list = document.getElementById('dropzone-files');
   if (!zone || !input) return;
 
-  function showFile(file) {
-    if (!file) {
-      fileLabel.hidden = true;
-      fileLabel.textContent = '';
+  function renderList() {
+    list.innerHTML = '';
+    if (selectedFiles.length === 0) {
+      list.hidden = true;
       zone.classList.remove('has-file');
       return;
     }
-    const kb = file.size / 1024;
-    const sizeStr = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB';
-    fileLabel.textContent = `${file.name} · ${sizeStr}`;
-    fileLabel.hidden = false;
+    const total = selectedFiles.reduce((s, f) => s + f.size, 0);
+    selectedFiles.forEach((file, idx) => {
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      name.className = 'file-name';
+      name.textContent = file.name;
+      const size = document.createElement('span');
+      size.className = 'file-size';
+      size.textContent = formatSize(file.size);
+      const rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'file-remove';
+      rm.setAttribute('aria-label', 'Entfernen');
+      rm.textContent = '×';
+      rm.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        selectedFiles.splice(idx, 1);
+        renderList();
+      });
+      li.append(name, size, rm);
+      list.appendChild(li);
+    });
+    // Gesamtsumme als kleiner Hinweis
+    const totalLi = document.createElement('li');
+    totalLi.className = 'dropzone__total' + (total > MAX_TOTAL_BYTES ? ' is-over' : '');
+    totalLi.textContent =
+      (strings['create.dropzoneTotal'] || 'Gesamt')
+      + `: ${formatSize(total)} / ${formatSize(MAX_TOTAL_BYTES)}`;
+    list.appendChild(totalLi);
+    list.hidden = false;
     zone.classList.add('has-file');
   }
 
-  input.addEventListener('change', () => showFile(input.files[0] || null));
+  function addFiles(fileList) {
+    for (const f of fileList) {
+      // Doppelte vermeiden (gleicher Name + Größe)
+      if (!selectedFiles.some(x => x.name === f.name && x.size === f.size)) {
+        selectedFiles.push(f);
+      }
+    }
+    renderList();
+  }
+
+  input.addEventListener('change', () => {
+    addFiles(input.files);
+    input.value = '';   // damit derselbe File erneut wählbar bleibt
+  });
 
   ['dragenter', 'dragover'].forEach(ev => {
     zone.addEventListener(ev, e => {
@@ -122,10 +169,7 @@ function setupDropzone() {
   });
   zone.addEventListener('drop', e => {
     const dt = e.dataTransfer;
-    if (dt && dt.files && dt.files.length) {
-      input.files = dt.files;
-      showFile(dt.files[0]);
-    }
+    if (dt && dt.files && dt.files.length) addFiles(dt.files);
   });
 }
 
@@ -135,29 +179,31 @@ async function handleSubmit() {
   const honeypotValue = hp && hp.value ? hp.value : '';
 
   const text = document.getElementById('plaintext').value;
-  const file = document.getElementById('file').files[0] || null;
   const expiresIn = parseInt(document.getElementById('expires').value, 10);
   const burn = document.getElementById('burn').checked;
   const passphrase = document.getElementById('passphrase').value;
   const notifyEmail = document.getElementById('notify-email').value.trim() || null;
   const senderHint = document.getElementById('sender-hint').value.trim() || null;
+  const senderName = document.getElementById('sender-name').value.trim() || null;
 
-  if (!text && !file) {
+  if (!text && selectedFiles.length === 0) {
     showError(strings['create.error.empty'] || 'Bitte Text oder Datei angeben.');
     return;
   }
 
-  let filePayload = null;
-  if (file) {
-    if (file.size > MAX_FILE_BYTES) {
-      showError(strings['create.error.fileTooLarge'] || 'Datei zu groß (max. 5 MB).');
-      return;
-    }
-    const buf = new Uint8Array(await file.arrayBuffer());
-    filePayload = { name: file.name, type: file.type, data: bytesToBase64(buf) };
+  // Dateien einlesen + Gesamtgröße prüfen
+  const totalSize = selectedFiles.reduce((s, f) => s + f.size, 0);
+  if (totalSize > MAX_TOTAL_BYTES) {
+    showError(strings['create.error.fileTooLarge'] || 'Dateien zu groß (max. 25 MB gesamt).');
+    return;
+  }
+  const filesPayload = [];
+  for (const f of selectedFiles) {
+    const buf = new Uint8Array(await f.arrayBuffer());
+    filesPayload.push({ name: f.name, type: f.type, data: bytesToBase64(buf) });
   }
 
-  const payload = JSON.stringify({ text, file: filePayload });
+  const payload = JSON.stringify({ text, files: filesPayload });
   const payloadBytes = new TextEncoder().encode(payload);
 
   const key = await generateKey();
@@ -208,7 +254,12 @@ async function handleSubmit() {
   const { token, expiresAt } = await res.json();
   const url = `${location.origin}/s/${token}#${bytesToBase64Url(keyForUrl)}`;
 
-  showResult(url, expiresAt, { hasPassphrase: !!passphrase, burnAfterRead: burn });
+  showResult(url, expiresAt, {
+    hasPassphrase: !!passphrase,
+    burnAfterRead: burn,
+    senderHint,
+    senderName
+  });
 }
 
 function showResult(url, expiresAt, opts) {
@@ -235,23 +286,31 @@ function showResult(url, expiresAt, opts) {
   };
 
   // Mail-Button (mailto:)
-  const subject = strings['create.mailSubject'] || 'Sicheres Geheimnis für dich';
+  const subject = strings['create.mailSubject'] || 'Sicheres Geheimnis von secret.bytexx.de';
   const expiresLine = (strings['create.mailExpires'] || 'Gültig bis: {when}\n')
     .replace('{when}', expiresDate.toLocaleString(locale));
   const burnLine = opts.burnAfterRead
     ? (strings['create.mailBurn'] || 'Der Link funktioniert nur ein einziges Mal.\n')
     : '';
   const passLine = opts.hasPassphrase
-    ? (strings['create.mailPassphrase'] || 'Zum Öffnen brauchst du zusätzlich die Passphrase, die ich dir separat zukommen lasse.\n')
+    ? (strings['create.mailPassphrase'] || 'Zum Öffnen benötigen Sie zusätzlich die Passphrase, die ich Ihnen separat zukomme lasse.\n')
     : '';
+  const hintLine = opts.senderHint
+    ? (strings['create.mailHint'] || '💡 Hinweis: {hint}\n').replace('{hint}', opts.senderHint)
+    : '';
+  const senderSig = opts.senderName ? (opts.senderName + '\n') : '';
+
   const bodyTpl = strings['create.mailBody'] ||
-    ('Hallo,\n\nÜber folgenden Link erreichst du das geteilte Geheimnis:\n\n{url}\n\n' +
-     '{expiresLine}{burnLine}{passphraseLine}\nDer Link wurde mit SharePassword (secret.bytexx.de) erzeugt.\n');
+    ('Hallo,\n\nich habe ein verschlüsseltes Geheimnis für Sie hinterlegt.\n' +
+     '{hintLine}\n🔗 {url}\n\n{expiresLine}{burnLine}{passphraseLine}\n' +
+     'Viele Grüße\n{senderSignature}\n');
   const body = bodyTpl
     .replace('{url}', url)
+    .replace('{hintLine}', hintLine)
     .replace('{expiresLine}', expiresLine)
     .replace('{burnLine}', burnLine)
-    .replace('{passphraseLine}', passLine);
+    .replace('{passphraseLine}', passLine)
+    .replace('{senderSignature}', senderSig);
 
   const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   document.getElementById('mail-btn').setAttribute('href', mailto);

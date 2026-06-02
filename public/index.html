@@ -39,9 +39,9 @@
         </label>
 
         <div class="field">
-          <span data-i18n="create.fileLabel">Datei (optional, max. 5 MB)</span>
+          <span data-i18n="create.fileLabel">Dateien (optional, max. 25 MB gesamt)</span>
           <label id="dropzone" class="dropzone" for="file">
-            <input type="file" id="file" class="dropzone__input">
+            <input type="file" id="file" multiple class="dropzone__input">
             <div class="dropzone__inner">
               <svg class="dropzone__icon" viewBox="0 0 24 24" width="28" height="28"
                    fill="none" stroke="currentColor" stroke-width="1.8"
@@ -51,13 +51,13 @@
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               <span class="dropzone__text" data-i18n="create.dropzoneText">
-                Datei hierher ziehen oder klicken
+                Dateien hierher ziehen oder klicken
               </span>
               <span class="dropzone__hint" data-i18n="create.dropzoneHint">
-                max. 5 MB · bleibt verschlüsselt im Browser
+                max. 25 MB gesamt · bleiben verschlüsselt im Browser
               </span>
-              <span id="dropzone-file" class="dropzone__file" hidden></span>
             </div>
+            <ul id="dropzone-files" class="dropzone__files" hidden></ul>
           </label>
         </div>
 
@@ -84,6 +84,11 @@
         <details class="advanced">
           <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
           <p class="advanced__lead" data-i18n="create.advancedLead"></p>
+          <label class="field">
+            <span data-i18n="create.senderNameLabel">Ihr Name (optional)</span>
+            <input type="text" id="sender-name" maxlength="80" autocomplete="name">
+            <small class="field__help" data-i18n="create.senderNameHelp"></small>
+          </label>
           <label class="field">
             <span data-i18n="create.passphraseLabel">Passphrase (optional)</span>
             <input type="password" id="passphrase" autocomplete="new-password">
