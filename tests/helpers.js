@@ -1,0 +1,27 @@
+export function dbAvailable() {
+  return process.env.SP_TEST_DB === '1';
+}
+
+export function setupTestEnv() {
+  process.env.NODE_ENV = 'test';
+  process.env.PORT = '0';
+  process.env.BIND = '127.0.0.1';
+  process.env.DB_HOST = process.env.DB_HOST || '127.0.0.1';
+  process.env.DB_PORT = process.env.DB_PORT || '3306';
+  process.env.DB_NAME = process.env.DB_NAME || 'sharepassword_test';
+  process.env.DB_USER = process.env.DB_USER || 'sharepass_test';
+  process.env.DB_PASS = process.env.DB_PASS || 'sharepass_test';
+  process.env.SMTP_HOST = 'localhost';
+  process.env.SMTP_PORT = '2525';
+  process.env.SMTP_USER = '';
+  process.env.SMTP_PASS = '';
+  process.env.SMTP_FROM = 'noreply@test';
+  process.env.IP_HASH_PEPPER = 'p'.repeat(64);
+  process.env.BASE_URL = 'http://localhost:3000';
+  process.env.DEFAULT_LANGUAGE = 'de';
+}
+
+export async function resetDb(pool) {
+  await pool.execute('DELETE FROM secrets');
+  await pool.execute('DELETE FROM brute_log');
+}

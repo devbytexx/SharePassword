@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import { loadConfig } from './lib/config.js';
 import { initPool } from './lib/db.js';
 import { initMailer } from './lib/mailer.js';
+import secretRoutes from './routes/secret.js';
 
 export async function buildApp(opts = {}) {
   const config = loadConfig();
@@ -17,6 +18,8 @@ export async function buildApp(opts = {}) {
   if (!opts.skipMailer) initMailer(config.smtp);
 
   app.get('/api/health', async () => ({ status: 'ok' }));
+
+  await app.register(secretRoutes);
 
   return app;
 }
