@@ -123,4 +123,12 @@ export default async function secretRoutes(app) {
 
     return reply.code(204).send();
   });
+
+  app.post('/api/secret/:token/attempt', { schema: tokenParamSchema }, async (req, reply) => {
+    const tokenBuf = parseToken(req.params.token);
+    if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
+    const ipHash = hashIp(req.ip || 'unknown', cfg.ipHashPepper);
+    await logAttempt(tokenBuf, ipHash);
+    return reply.code(204).send();
+  });
 }
