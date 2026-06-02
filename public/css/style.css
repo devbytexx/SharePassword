@@ -770,6 +770,14 @@ pre.plaintext {
 /* Tabelle horizontal scrollbar bei zu kleinem Viewport */
 .table-wrap { overflow-x: auto; }
 
+/* Unter-Überschriften in Doku-Seiten */
+.card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1rem 0 0.4rem;
+  color: var(--fg);
+}
+
 /* GitHub-Link (prominent, mit Icon) auf der Sicherheits-Seite */
 .github-link {
   display: inline-flex;

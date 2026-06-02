@@ -24,25 +24,270 @@
 
   <main class="page">
     <section class="card">
-      <h1>Datenschutz</h1>
+      <h1>Datenschutzerklärung</h1>
+      <p class="lead">
+        Stand: Juni 2026. Diese Datenschutzerklärung informiert Sie gemäß
+        Art. 13 und Art. 14 DSGVO darüber, welche personenbezogenen Daten
+        wir bei der Nutzung von <strong>secret.bytexx.de</strong>
+        verarbeiten, zu welchem Zweck und auf welcher Rechtsgrundlage.
+      </p>
+
+      <h2>1. Verantwortlicher</h2>
       <p>
-        SharePassword speichert nur den <strong>verschlüsselten Inhalt</strong>. Der Schlüssel
-        wird ausschließlich in Ihrem Browser erzeugt und im URL-Fragment (<code>#…</code>) hinter
-        dem Server-Token übertragen. Browser senden den URL-Fragment-Teil nicht an Server —
-        wir können den Klartext daher zu keinem Zeitpunkt einsehen.
+        Verantwortlich für die Datenverarbeitung im Sinne der DSGVO ist:
       </p>
       <p>
-        Ihre IP-Adresse wird ausschließlich als <strong>HMAC-SHA-256-Wert mit geheimem Schlüssel</strong>
-        zur Missbrauchserkennung verarbeitet, zum Beispiel für Rate-Limits und Brute-Force-Schutz.
-        Die Klartext-IP-Adresse wird nicht gespeichert.
+        <strong>BYTEXX IT</strong><br>
+        Inh. Rico Becker<br>
+        Albert-Einstein-Str. 18<br>
+        23617 Stockelsdorf
       </p>
       <p>
-        Geheimnisse werden nach Ablauf oder nach erstem Abruf (Burn-after-Read) automatisch
-        gelöscht. Es gibt kein Backup der Inhalte.
+        Tel.: +49 (0) 40 209 339 559<br>
+        Mobil: +49 (0) 172 675 059 6<br>
+        E-Mail: <a href="mailto:info@bytexx.de">info@bytexx.de</a>
       </p>
       <p>
-        Ein vollständiger Datenschutz-Text gemäß DSGVO wird vor Go-Live ergänzt.
+        Ein gesetzlich vorgeschriebener Datenschutzbeauftragter ist mangels
+        Erreichen der Schwellenwerte des § 38 BDSG nicht bestellt. Für
+        Datenschutzanliegen wenden Sie sich bitte direkt an die oben
+        genannte E-Mail-Adresse.
       </p>
+
+      <h2>2. Grundprinzip — Ende-zu-Ende-Verschlüsselung</h2>
+      <p>
+        SharePassword verschlüsselt Ihre Inhalte <strong>ausschließlich
+        in Ihrem Browser</strong> mit AES-256-GCM. Der Verschlüsselungs-
+        schlüssel wird in Ihrem Browser erzeugt, im Link-Fragment
+        (<code>#…</code>) übertragen und <strong>niemals an unseren Server
+        gesendet</strong>. Wir können den Inhalt Ihres Geheimnisses zu
+        keinem Zeitpunkt einsehen.
+      </p>
+
+      <h2>3. Welche Daten verarbeiten wir?</h2>
+
+      <h3>3.1 Verschlüsselte Inhaltsdaten</h3>
+      <table class="datatable">
+        <tr><th>Datenfeld</th><th>Inhalt</th><th>Speicherdauer</th></tr>
+        <tr>
+          <td>Cipher-Block</td>
+          <td>verschlüsselter Inhalt + ggf. Dateien (für uns unlesbar)</td>
+          <td>bis zum ersten Abruf oder bis zum Ablauf (max. 30 Tage)</td>
+        </tr>
+        <tr>
+          <td>Metadaten</td>
+          <td>Ablaufzeitpunkt, Burn-Flag, Salt (bei Passphrase)</td>
+          <td>wie Cipher-Block</td>
+        </tr>
+        <tr>
+          <td>Hinweistext (optional)</td>
+          <td>vom Absender frei eingegeben, im Klartext gespeichert</td>
+          <td>wie Cipher-Block</td>
+        </tr>
+        <tr>
+          <td>Benachrichtigungs-E-Mail (optional)</td>
+          <td>vom Absender frei eingegeben, im Klartext gespeichert</td>
+          <td>wie Cipher-Block, plus einmaliger Mail-Versand</td>
+        </tr>
+      </table>
+
+      <h3>3.2 Technische Daten zur Missbrauchserkennung</h3>
+      <table class="datatable">
+        <tr><th>Datenfeld</th><th>Form</th><th>Speicherdauer</th></tr>
+        <tr>
+          <td>IP-Adresse (Erstellen)</td>
+          <td>nur als HMAC-SHA-256-Hash mit geheimem Schlüssel</td>
+          <td>max. 24 Stunden (rollierendes Tageslimit)</td>
+        </tr>
+        <tr>
+          <td>IP-Adresse (Brute-Force-Versuche)</td>
+          <td>nur als HMAC-SHA-256-Hash mit geheimem Schlüssel</td>
+          <td>max. 24 Stunden</td>
+        </tr>
+        <tr>
+          <td>Klartext-IP-Adresse</td>
+          <td>— wird nicht gespeichert —</td>
+          <td>—</td>
+        </tr>
+      </table>
+
+      <h3>3.3 Server-Logs</h3>
+      <p>
+        Unser Webserver schreibt aus betrieblichen Gründen Zugriffsprotokolle:
+        Zeitstempel, HTTP-Methode, Pfad (ohne Token), Status-Code, User-Agent.
+        IP-Adressen erscheinen nur als <strong>HMAC-Hash</strong>. Diese Logs
+        werden nach <strong>14 Tagen</strong> automatisch gelöscht
+        (<code>logrotate</code>).
+      </p>
+
+      <h3>3.4 Lokaler Browser-Speicher (localStorage)</h3>
+      <p>
+        Wir speichern in Ihrem Browser zwei kleine Einträge zur
+        Personalisierung der Oberfläche:
+      </p>
+      <ul>
+        <li><code>sp.theme</code> — Ihre Wahl von Hell- oder Dunkelmodus</li>
+        <li><code>sp.lang</code> — Ihre Sprachwahl (Deutsch oder Englisch)</li>
+      </ul>
+      <p>
+        Diese Einträge verlassen Ihren Browser nicht und werden nicht an
+        unseren Server übertragen. Sie können sie jederzeit in den
+        Einstellungen Ihres Browsers löschen.
+      </p>
+
+      <h3>3.5 Cookies</h3>
+      <p>
+        Wir setzen <strong>keine</strong> Cookies. Wir verwenden
+        <strong>kein</strong> Tracking, <strong>kein</strong> Web-Analytics,
+        <strong>keine</strong> Inhalte von Drittanbietern (Google Fonts,
+        externe CDNs etc.).
+      </p>
+
+      <h2>4. Zweck der Verarbeitung</h2>
+      <ul>
+        <li>
+          <strong>Bereitstellung des Dienstes:</strong> Speicherung und
+          Auslieferung des verschlüsselten Cipher-Blocks für den einmaligen
+          Abruf durch den Empfänger.
+        </li>
+        <li>
+          <strong>Benachrichtigung:</strong> einmaliger E-Mail-Versand an
+          den Absender, sofern dieser eine Benachrichtigungsadresse
+          hinterlegt hat.
+        </li>
+        <li>
+          <strong>Missbrauchserkennung:</strong> Rate-Limits (10 Anfragen/Min,
+          24 Geheimnisse/Tag pro IP) und Brute-Force-Schutz auf Passphrase-
+          Versuche.
+        </li>
+      </ul>
+
+      <h2>5. Rechtsgrundlagen (Art. 6 DSGVO)</h2>
+      <ul>
+        <li>
+          <strong>Art. 6 Abs. 1 lit. b DSGVO</strong> (Vertragserfüllung) —
+          für die Bereitstellung des Dienstes selbst: die Verarbeitung der
+          verschlüsselten Inhalte ist notwendig, um Ihnen das Tool im von
+          Ihnen angeforderten Umfang bereitzustellen.
+        </li>
+        <li>
+          <strong>Art. 6 Abs. 1 lit. f DSGVO</strong> (berechtigtes Interesse)
+          — für die Missbrauchserkennung (gehashte IP, Server-Logs). Unser
+          berechtigtes Interesse besteht im sicheren und stabilen Betrieb
+          des Dienstes und in der Verhinderung von Bot-Spam.
+        </li>
+        <li>
+          <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung) — für
+          die optionale Benachrichtigungs-E-Mail: durch die freiwillige
+          Eingabe Ihrer E-Mail-Adresse erteilen Sie konkludent Ihre
+          Einwilligung in deren Verarbeitung zur Benachrichtigung. Sie
+          können die Mail nicht hinterlegen, wenn Sie die Verarbeitung
+          nicht wünschen.
+        </li>
+      </ul>
+
+      <h2>6. Empfänger der Daten</h2>
+      <p>
+        Die verschlüsselten Daten verlassen unseren Server nicht. Es findet
+        keine Übermittlung an Dritte statt — mit folgenden Ausnahmen:
+      </p>
+      <ul>
+        <li>
+          <strong>Mail-Provider:</strong> Bei optionaler Benachrichtigung
+          wird die Mail über unseren SMTP-Server (<code>mail.bytexx.de</code>,
+          Standort Deutschland) versendet. Die Mail enthält weder
+          Token noch URL noch Klartext — nur Zeitstempel und einen
+          IP-Hash zur Korrelation.
+        </li>
+        <li>
+          <strong>Empfänger der Geheimnis-URL:</strong> Die Person, an die
+          Sie den Link weitergeben, kann auf den Cipher-Block zugreifen und
+          ihn (mit dem im Link enthaltenen Schlüssel) entschlüsseln. Sie
+          tragen Verantwortung für die sichere Übermittlung des Links.
+        </li>
+      </ul>
+
+      <h2>7. Drittlandübermittlung</h2>
+      <p>
+        Standardmäßig findet <strong>keine</strong> Übermittlung in
+        Drittländer außerhalb der EU statt. Der Server steht in Deutschland.
+      </p>
+      <p>
+        <em>Hinweis:</em> Sollten wir zukünftig einen
+        Bot-Schutz-Service (z. B. Cloudflare Turnstile) aktivieren, kommt
+        es bei dessen Nutzung zu einer Übermittlung von technischen Daten
+        (IP-Adresse, Browser-Fingerprint) an Cloudflare Inc. (USA). Die
+        Übermittlung erfolgt dann auf Basis der EU-Standardvertragsklauseln
+        und Cloudflares EU-US Data Privacy Framework-Zertifizierung. Diese
+        Erklärung wird in diesem Fall ergänzt.
+      </p>
+
+      <h2>8. Verschlüsselung (TLS)</h2>
+      <p>
+        Die Verbindung zu <code>secret.bytexx.de</code> ist mit TLS (HTTPS)
+        verschlüsselt. Sie erkennen das am Schloss-Symbol in Ihrem Browser.
+        Wir setzen <strong>HSTS</strong> (HTTP Strict Transport Security) ein,
+        sodass Ihr Browser den Server nach dem ersten Besuch nur noch über
+        TLS kontaktiert.
+      </p>
+
+      <h2>9. Ihre Rechte als betroffene Person</h2>
+      <p>Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+      <ul>
+        <li><strong>Auskunftsrecht</strong> (Art. 15 DSGVO)</li>
+        <li><strong>Recht auf Berichtigung</strong> (Art. 16 DSGVO)</li>
+        <li><strong>Recht auf Löschung</strong> (Art. 17 DSGVO)</li>
+        <li><strong>Recht auf Einschränkung der Verarbeitung</strong> (Art. 18 DSGVO)</li>
+        <li><strong>Recht auf Datenübertragbarkeit</strong> (Art. 20 DSGVO)</li>
+        <li><strong>Widerspruchsrecht</strong> (Art. 21 DSGVO)</li>
+        <li><strong>Recht auf Widerruf der Einwilligung</strong> (Art. 7 Abs. 3 DSGVO)</li>
+      </ul>
+      <p>
+        Sie können diese Rechte jederzeit per formloser E-Mail an
+        <a href="mailto:info@bytexx.de">info@bytexx.de</a> geltend machen.
+      </p>
+      <p>
+        <em>Praktischer Hinweis:</em> Da wir Ihre IP nur als nicht
+        umkehrbaren Hash speichern und der Cipher-Block keinen Personen-
+        bezug erkennen lässt, können wir Ihre Daten in den meisten Fällen
+        gar nicht identifizieren. Eine Auskunft kann daher nur in
+        eingeschränktem Umfang erfolgen. Sie können jederzeit selbst ein
+        von Ihnen erstelltes Geheimnis über den Link löschen lassen
+        (Burn-Funktion) oder das Ablaufen abwarten.
+      </p>
+
+      <h2>10. Beschwerderecht bei der Aufsichtsbehörde</h2>
+      <p>
+        Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde
+        zu beschweren (Art. 77 DSGVO). Für uns zuständig ist:
+      </p>
+      <p>
+        <strong>Unabhängiges Landeszentrum für Datenschutz Schleswig-Holstein (ULD)</strong><br>
+        Holstenstraße 98<br>
+        24103 Kiel<br>
+        Tel.: +49 (0) 431 988-1200<br>
+        E-Mail: <a href="mailto:mail@datenschutzzentrum.de">mail@datenschutzzentrum.de</a><br>
+        Web: <a href="https://www.datenschutzzentrum.de" target="_blank" rel="noopener">datenschutzzentrum.de</a>
+      </p>
+
+      <h2>11. Quellcode &amp; Transparenz</h2>
+      <p>
+        Der vollständige Quellcode von SharePassword ist öffentlich
+        einsehbar unter
+        <a href="https://github.com/devbytexx/SharePassword" target="_blank" rel="noopener">
+          github.com/devbytexx/SharePassword
+        </a>.
+        Sie können jederzeit nachprüfen, wie wir mit Ihren Daten umgehen.
+      </p>
+
+      <h2>12. Änderungen dieser Erklärung</h2>
+      <p>
+        Wir behalten uns vor, diese Datenschutzerklärung an geänderte
+        Rechtslagen, Service-Änderungen oder Datenverarbeitungs-Praktiken
+        anzupassen. Die jeweils aktuelle Fassung ist auf dieser Seite
+        verfügbar.
+      </p>
+
       <p><a class="btn btn--ghost-orange" href="/">← Zurück</a></p>
     </section>
   </main>
