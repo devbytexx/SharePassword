@@ -95,3 +95,44 @@ test('POST /api/secret rejects empty ciphertext (after base64 decode)', { skip: 
   await app.close();
   await closePool();
 });
+
+test('GET /api/secret/:token returns ciphertext + meta', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  await resetDb(getPool());
+
+  const create = await app.inject({
+    method: 'POST', url: '/api/secret',
+    payload: {
+      ciphertext: Buffer.from('hello').toString('base64'),
+      expiresIn: 3600, burnAfterRead: true, hasPassphrase: false,
+      passphraseSalt: null, notifyEmail: null, senderHint: 'Hi'
+    }
+  });
+  const token = create.json().token;
+
+  const get = await app.inject({ method: 'GET', url: `/api/secret/${token}` });
+  assert.equal(get.statusCode, 200);
+  const body = get.json();
+  assert.equal(Buffer.from(body.ciphertext, 'base64').toString(), 'hello');
+  assert.equal(body.hasPassphrase, false);
+  assert.equal(body.passphraseSalt, null);
+  assert.equal(body.senderHint, 'Hi');
+  assert.equal(body.burnAfterRead, true);
+
+  await app.close(); await closePool();
+});
+
+test('GET /api/secret/:token returns 404 for unknown token', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  const fake = 'A'.repeat(22);
+  const res = await app.inject({ method: 'GET', url: `/api/secret/${fake}` });
+  assert.equal(res.statusCode, 404);
+  await app.close(); await closePool();
+});
+
+test('GET /api/secret/:token rejects invalid token format', async () => {
+  const app = await buildApp({ skipDb: true, skipMailer: true });
+  const res = await app.inject({ method: 'GET', url: `/api/secret/short` });
+  assert.equal(res.statusCode, 400);
+  await app.close();
+});

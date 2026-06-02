@@ -64,4 +64,38 @@ export default async function secretRoutes(app) {
       expiresAt: Math.floor(expiresAt.getTime() / 1000)
     };
   });
+
+  const tokenParamSchema = {
+    params: {
+      type: 'object',
+      required: ['token'],
+      properties: { token: { type: 'string', pattern: '^[A-Za-z0-9_-]{22}$' } }
+    }
+  };
+
+  function parseToken(s) {
+    try { return base64UrlToToken(s); } catch { return null; }
+  }
+
+  app.get('/api/secret/:token', { schema: tokenParamSchema }, async (req, reply) => {
+    const tokenBuf = parseToken(req.params.token);
+    if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
+
+    const attempts = await countRecentAttempts(tokenBuf, cfg.bruteWindowSec);
+    if (attempts >= cfg.bruteMaxAttempts) {
+      return reply.code(423).send({ error: 'locked', retryAfter: cfg.bruteWindowSec });
+    }
+
+    const row = await getSecret(tokenBuf);
+    if (!row) return reply.code(404).send({ error: 'not_found_or_expired' });
+
+    return {
+      ciphertext: row.ciphertext.toString('base64'),
+      hasPassphrase: !!row.has_passphrase,
+      passphraseSalt: row.passphrase_salt ? row.passphrase_salt.toString('base64') : null,
+      senderHint: row.sender_hint,
+      burnAfterRead: !!row.burn_after_read,
+      expiresAt: Math.floor(new Date(row.expires_at).getTime() / 1000)
+    };
+  });
 }
