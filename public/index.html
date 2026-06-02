@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SharePassword – BYTEXX</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260603-6">
+  <link rel="stylesheet" href="/css/style.css?v=20260603-7">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -95,6 +95,12 @@
           <label class="field">
             <span data-i18n="create.passphraseLabel">Passphrase (optional)</span>
             <input type="password" id="passphrase" autocomplete="new-password">
+            <div class="pass-suggest">
+              <span class="pass-suggest__label" data-i18n="create.passphraseSuggestLabel">Vorschlag:</span>
+              <code id="pass-suggest-text" class="pass-suggest__code"></code>
+              <button type="button" id="pass-apply" class="btn-mini" data-i18n="create.passphraseApply">Übernehmen</button>
+              <button type="button" id="pass-regen" class="btn-mini" data-i18n="create.passphraseRegen">Neu</button>
+            </div>
             <small class="field__help" data-i18n="create.passphraseHelp"></small>
           </label>
           <label class="field">

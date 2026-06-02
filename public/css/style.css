@@ -333,6 +333,44 @@ textarea.hint-textarea {
   font-family: 'Lato', sans-serif;
   font-size: 0.95rem;
 }
+
+/* Passphrase-Vorschlag mit Übernehmen / Neu */
+.pass-suggest {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+.pass-suggest__label { color: var(--fg-muted); }
+.pass-suggest__code {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  background: rgba(245, 132, 31, 0.10);
+  color: var(--brand-orange);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  user-select: all;             /* damit Doppelklick markiert */
+  letter-spacing: 0.02em;
+}
+.btn-mini {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--fg-muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.btn-mini:hover {
+  color: var(--brand-orange);
+  border-color: var(--brand-orange);
+  background: rgba(245, 132, 31, 0.06);
+}
 .field.checkbox > span {
   margin: 0;
   font-weight: 400;

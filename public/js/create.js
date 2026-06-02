@@ -46,7 +46,39 @@ let selectedFiles = [];   // Array von File-Objekten
   setupTurnstile();
   setupSecurityHint();
   setupHoneypot();
+  setupPassphraseSuggest();
 })();
+
+// Erzeugt eine 12-stellige Passphrase aus alphanumerisch + simplen
+// Sonderzeichen. Ähnlich-aussehende Zeichen (0/O, 1/l/I) ausgeschlossen.
+function generatePassphrase(length = 12) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*-_=?';
+  const arr = new Uint32Array(length);
+  crypto.getRandomValues(arr);
+  let out = '';
+  for (let i = 0; i < length; i++) out += chars[arr[i] % chars.length];
+  return out;
+}
+
+function setupPassphraseSuggest() {
+  const codeEl  = document.getElementById('pass-suggest-text');
+  const applyBtn = document.getElementById('pass-apply');
+  const regenBtn = document.getElementById('pass-regen');
+  const input   = document.getElementById('passphrase');
+  if (!codeEl || !applyBtn || !regenBtn || !input) return;
+
+  const regen = () => { codeEl.textContent = generatePassphrase(12); };
+  regen();
+  regenBtn.addEventListener('click', regen);
+
+  applyBtn.addEventListener('click', () => {
+    input.value = codeEl.textContent;
+    // Kurz im Klartext zeigen, damit der User sieht was übernommen wurde
+    input.type = 'text';
+    setTimeout(() => { input.type = 'password'; }, 1800);
+    input.focus();
+  });
+}
 
 function setupHoneypot() {
   // Browser/Passwort-Manager schreiben gelegentlich trotz autocomplete=off
