@@ -8,12 +8,16 @@
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
+  <canvas id="hex-canvas" aria-hidden="true"></canvas>
   <header class="site-header">
     <div class="site-header__inner">
       <a href="/" class="brand">
         <img src="/img/bytexx-logo.png" alt="BYTEXX" class="brand__logo">
         <span class="brand__title">SharePassword</span>
       </a>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Theme wechseln"></button>
+      </div>
     </div>
   </header>
 
@@ -27,9 +31,9 @@
         wir können den Klartext daher zu keinem Zeitpunkt einsehen.
       </p>
       <p>
-        Ihre IP-Adresse wird ausschließlich als <strong>gesalzener HMAC-SHA-256-Hash</strong>
-        zur Missbrauchserkennung (Rate-Limit, Brute-Force-Schutz) verarbeitet — der Klartext-IP
-        wird nicht gespeichert.
+        Ihre IP-Adresse wird ausschließlich als <strong>HMAC-SHA-256-Wert mit geheimem Schlüssel</strong>
+        zur Missbrauchserkennung verarbeitet, zum Beispiel für Rate-Limits und Brute-Force-Schutz.
+        Die Klartext-IP-Adresse wird nicht gespeichert.
       </p>
       <p>
         Geheimnisse werden nach Ablauf oder nach erstem Abruf (Burn-after-Read) automatisch
@@ -47,5 +51,11 @@
     <a href="/datenschutz.html">Datenschutz</a>
     <span class="brand__title">© BYTEXX IT</span>
   </footer>
+
+  <script type="module">
+    import { initThemeToggle } from '/js/theme.js';
+    initThemeToggle();
+  </script>
+  <script type="module" src="/js/hexagon.js"></script>
 </body>
 </html>

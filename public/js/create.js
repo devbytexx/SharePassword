@@ -3,6 +3,9 @@ import {
   generateKey, encryptBytes, deriveKekFromPassphrase, wrapKey,
   bytesToBase64Url, bytesToBase64
 } from '/js/crypto.js';
+import { initThemeToggle } from '/js/theme.js';
+
+initThemeToggle();
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 

@@ -1,4 +1,6 @@
 import { currentLang, setLang, loadStrings, apply } from '/js/i18n.js';
+import { initThemeToggle } from '/js/theme.js';
+initThemeToggle();
 import {
   decryptBytes, deriveKekFromPassphrase, unwrapKey,
   base64UrlToBytes, base64ToBytes

@@ -60,8 +60,13 @@
   --shadow-lg: 0 12px 32px rgba(15, 30, 60, 0.12);
 }
 
+/* Dark-Theme — angewendet via system preference ODER expliziter Toggle */
+:root[data-theme="dark"],
+:root:not([data-theme]) {
+  /* fallback: nichts (Light bleibt Standard) */
+}
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg:           #0f1623;
     --bg-grad-from: #0f1623;
     --bg-grad-to:   #1a2236;
@@ -76,6 +81,20 @@
     --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
   }
 }
+:root[data-theme="dark"] {
+  --bg:           #0f1623;
+  --bg-grad-from: #0f1623;
+  --bg-grad-to:   #1a2236;
+  --card:         #1a2236;
+  --border:       #2a3447;
+  --border-strong:#3a455c;
+  --fg:           #f2f4f8;
+  --fg-muted:     #a8b0c0;
+  --fg-soft:      #6c7588;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow:    0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -89,7 +108,19 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
+
+/* Hexagon-Animation als statischer Hintergrund hinter allem */
+#hex-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+.site-header, main.page, .site-footer { position: relative; z-index: 1; }
 
 /* ====== Header ====== */
 .site-header {
@@ -114,9 +145,24 @@ body {
   color: var(--fg);
 }
 .brand__logo {
+  /* Logo zeigt nur den oberen Teil (Buchstaben), Reflexion wird abgeschnitten */
   height: 36px;
   width: auto;
   display: block;
+  /* PNG ist 500x194; obere ~120/194 ≈ 62% sind die Buchstaben, Rest ist Reflexion */
+  object-fit: cover;
+  object-position: top;
+  aspect-ratio: 500 / 120;
+}
+/* Im Dark-Mode hat das Logo einen leichten weißen Halo, damit Orange/Blau gut lesbar bleiben */
+:root[data-theme="dark"] .brand__logo,
+:where(:root:not([data-theme="light"])) .brand__logo {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .brand__logo {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+  }
 }
 .brand__title {
   font-weight: 700;
@@ -126,7 +172,13 @@ body {
   border-left: 1px solid var(--border-strong);
   padding-left: 0.7rem;
 }
-.lang-toggle {
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lang-toggle,
+.theme-toggle {
   background: transparent;
   border: 1px solid var(--border-strong);
   color: var(--fg-muted);
@@ -136,8 +188,16 @@ body {
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.lang-toggle:hover { color: var(--brand-blue); border-color: var(--brand-blue); }
+.theme-toggle {
+  padding: 0.35rem 0.45rem;
+  line-height: 0;
+}
+.lang-toggle:hover,
+.theme-toggle:hover { color: var(--brand-blue); border-color: var(--brand-blue); }
 
 /* ====== Page layout ====== */
 main.page {
