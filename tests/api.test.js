@@ -136,3 +136,34 @@ test('GET /api/secret/:token rejects invalid token format', async () => {
   assert.equal(res.statusCode, 400);
   await app.close();
 });
+
+test('POST /api/secret/:token/burn deletes secret', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  await resetDb(getPool());
+
+  const create = await app.inject({
+    method: 'POST', url: '/api/secret',
+    payload: {
+      ciphertext: Buffer.from('zap').toString('base64'),
+      expiresIn: 3600, burnAfterRead: true, hasPassphrase: false,
+      passphraseSalt: null, notifyEmail: null, senderHint: null
+    }
+  });
+  const token = create.json().token;
+
+  const burn = await app.inject({ method: 'POST', url: `/api/secret/${token}/burn` });
+  assert.equal(burn.statusCode, 204);
+
+  const after = await app.inject({ method: 'GET', url: `/api/secret/${token}` });
+  assert.equal(after.statusCode, 404);
+
+  await app.close(); await closePool();
+});
+
+test('POST /api/secret/:token/burn is idempotent (204 even if already gone)', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  const fake = 'A'.repeat(22);
+  const res = await app.inject({ method: 'POST', url: `/api/secret/${fake}/burn` });
+  assert.equal(res.statusCode, 204);
+  await app.close(); await closePool();
+});

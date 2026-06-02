@@ -4,6 +4,7 @@ import {
 } from '../lib/db.js';
 import { generateToken, hashIp, tokenToBase64Url, base64UrlToToken }
   from '../lib/crypto-utils.js';
+import { sendBurnMail } from '../lib/mailer.js';
 
 const createSchema = {
   body: {
@@ -100,5 +101,26 @@ export default async function secretRoutes(app) {
       burnAfterRead: !!row.burn_after_read,
       expiresAt: Math.floor(row.expires_at.getTime() / 1000)
     };
+  });
+
+  app.post('/api/secret/:token/burn', { schema: tokenParamSchema }, async (req, reply) => {
+    const tokenBuf = parseToken(req.params.token);
+    if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
+
+    const row = await getSecret(tokenBuf);
+    const deleted = await deleteSecret(tokenBuf);
+
+    if (deleted && row && row.notify_email) {
+      const ipHash = hashIp(req.ip || 'unknown', cfg.ipHashPepper);
+      sendBurnMail({
+        to: row.notify_email,
+        from: cfg.smtp.from,
+        senderHint: row.sender_hint,
+        ipHashHex: ipHash.toString('hex'),
+        when: new Date()
+      }).catch(err => req.log.error({ err }, 'burn mail failed'));
+    }
+
+    return reply.code(204).send();
   });
 }
