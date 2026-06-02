@@ -317,10 +317,10 @@ main.page--wide .card li { line-height: 1.55; }
   margin-bottom: 1.1rem;         /* Abstand zur nächsten Section übernimmt der Row */
 }
 .field-row > .field { margin-bottom: 0; }   /* inneres margin entfällt */
-/* Inputs in der Row sind schmaler — nicht voll bis zum Spaltenende */
+/* Inputs in der Row sind schmaler — nehmen nur den nötigen Platz ein */
 .field-row input[type=text],
 .field-row input[type=email] {
-  max-width: 20rem;
+  max-width: 14rem;
 }
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
