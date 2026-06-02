@@ -213,11 +213,12 @@ Alle Routen unter `/api`. JSON-Body, JSON-Response. Validierung via Fastify-Sche
 
 Validierung:
 
-- `ciphertext`: max 7 MB base64 (entspricht ~5 MB binär + Overhead)
+- `ciphertext`: base64-String, max 7 MB nach Encoding (entspricht ~5 MB binär + Overhead)
 - `expiresIn` ∈ { 3600, 86400, 604800, 2592000 } (1h, 1d, 7d, 30d)
-- `passphraseSalt`: pflicht wenn `hasPassphrase=true`, sonst null
-- `notifyEmail`: optional, RFC-5322-Format
+- `passphraseSalt`: base64-String von genau 16 Byte; pflicht wenn `hasPassphrase=true`, sonst null
+- `notifyEmail`: optional, RFC-5322-Format, max 255 Zeichen
 - `senderHint`: max 120 Zeichen, wird unverschlüsselt gespeichert (= sichtbar für Empfänger vor Entschlüsselung)
+- Alle base64-Felder werden vom Server beim Persist in `VARBINARY` / `LONGBLOB` konvertiert; beim GET wieder als base64-String ausgeliefert.
 
 **Response:**
 
