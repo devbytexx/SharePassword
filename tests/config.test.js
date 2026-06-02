@@ -1,6 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
+// Vorladen, damit `dotenv/config` (in lib/config.js) sich nicht in den
+// missing-env-Test einklinkt und gelöschte Werte aus einer .env-Datei
+// silently wieder reinholt.
+import 'dotenv/config';
+
 test('loadConfig throws when required env missing', async () => {
   const orig = { ...process.env };
   for (const k of ['DB_PASS', 'IP_HASH_PEPPER']) delete process.env[k];

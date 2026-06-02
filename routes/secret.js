@@ -1,7 +1,7 @@
 import {
   insertSecret, getSecret, deleteSecret,
   logAttempt, countRecentAttempts
-} from '../lib/db.js';
+} from '../lib/storage.js';
 import { generateToken, hashIp, tokenToBase64Url, base64UrlToToken }
   from '../lib/crypto-utils.js';
 import { sendBurnMail } from '../lib/mailer.js';

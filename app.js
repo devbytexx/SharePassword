@@ -4,7 +4,7 @@ import Fastify from 'fastify';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
 import { loadConfig } from './lib/config.js';
-import { initPool } from './lib/db.js';
+import { initPool, isMemoryMode } from './lib/storage.js';
 import { initMailer } from './lib/mailer.js';
 import secretRoutes from './routes/secret.js';
 import pageRoutes from './routes/pages.js';
@@ -19,7 +19,10 @@ export async function buildApp(opts = {}) {
 
   app.decorate('config', config);
 
-  if (!opts.skipDb) initPool(config);
+  if (!opts.skipDb) {
+    initPool(config);
+    if (isMemoryMode) app.log.warn('SP_NO_DB=1 → using in-memory storage (DEV ONLY)');
+  }
   if (!opts.skipMailer) initMailer(config.smtp);
 
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
