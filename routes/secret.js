@@ -81,6 +81,9 @@ export default async function secretRoutes(app) {
     const tokenBuf = parseToken(req.params.token);
     if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
 
+    // Lock check before fetch: brute_log only contains rows from /attempt,
+    // which require knowledge of the token. Fresh unknown tokens cannot be
+    // locked, so this order does not leak existence to a new attacker.
     const attempts = await countRecentAttempts(tokenBuf, cfg.bruteWindowSec);
     if (attempts >= cfg.bruteMaxAttempts) {
       return reply.code(423).send({ error: 'locked', retryAfter: cfg.bruteWindowSec });
@@ -95,7 +98,7 @@ export default async function secretRoutes(app) {
       passphraseSalt: row.passphrase_salt ? row.passphrase_salt.toString('base64') : null,
       senderHint: row.sender_hint,
       burnAfterRead: !!row.burn_after_read,
-      expiresAt: Math.floor(new Date(row.expires_at).getTime() / 1000)
+      expiresAt: Math.floor(row.expires_at.getTime() / 1000)
     };
   });
 }
