@@ -1,7 +1,19 @@
 -- Template. On the server, copy to sql/002-grants.sql with the real password
 -- generated via: openssl rand -base64 32
+--
+-- IMPORTANT: MariaDB treats 'sharepass'@'localhost' (Unix socket) and
+-- 'sharepass'@'127.0.0.1' (TCP) as TWO DIFFERENT accounts. mysql2 from
+-- Node connects via TCP, so we MUST grant on 127.0.0.1 — not localhost.
+-- We grant both for redundancy (mysql-CLI uses the socket via localhost).
+
 CREATE USER IF NOT EXISTS 'sharepass'@'localhost'
   IDENTIFIED BY 'REPLACE_ME_WITH_GENERATED_PASSWORD';
+CREATE USER IF NOT EXISTS 'sharepass'@'127.0.0.1'
+  IDENTIFIED BY 'REPLACE_ME_WITH_GENERATED_PASSWORD';
+
 GRANT SELECT, INSERT, UPDATE, DELETE ON sharepassword.*
   TO 'sharepass'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON sharepassword.*
+  TO 'sharepass'@'127.0.0.1';
+
 FLUSH PRIVILEGES;
