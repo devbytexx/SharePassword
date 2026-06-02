@@ -313,10 +313,13 @@ main.page--wide .card li { line-height: 1.55; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.9rem;
+  align-items: start;            /* nicht stretchen, sondern oben bündig */
+  margin-bottom: 1.1rem;         /* Abstand zur nächsten Section übernimmt der Row */
 }
-.field-row > .field { margin-bottom: 1.1rem; }
+.field-row > .field { margin-bottom: 0; }   /* inneres margin entfällt */
 @media (max-width: 600px) {
-  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
+  .field-row > .field { margin-bottom: 1.1rem; }
 }
 
 /* Hinweis-Textarea darf kompakter sein als der Plaintext-Bereich */
