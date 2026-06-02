@@ -29,6 +29,12 @@ export async function buildApp(opts = {}) {
     index: 'index.html'
   });
 
+  await app.register(fastifyStatic, {
+    root: path.join(__dirname, 'i18n'),
+    prefix: '/i18n/',
+    decorateReply: false
+  });
+
   app.get('/api/health', async () => ({ status: 'ok' }));
 
   await app.register(rateLimit, { global: false });
