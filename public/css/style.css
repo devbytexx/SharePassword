@@ -40,9 +40,9 @@
   --bg-grad-from: #eef2f9;
   --bg-grad-to:   #f7f8fb;
   --card:      #ffffff;
-  --card-glass: rgba(255, 255, 255, 0.32);
+  --card-glass: rgba(255, 255, 255, 0.12);
   --border:    rgba(195, 205, 220, 0.6);
-  --border-glass: rgba(36, 83, 152, 0.32);
+  --border-glass: rgba(36, 83, 152, 0.22);
   --border-strong: #c8d0dc;
 
   /* Text */
@@ -73,9 +73,9 @@
     --bg-grad-from: #0f1623;
     --bg-grad-to:   #1a2236;
     --card:         #1a2236;
-    --card-glass:   rgba(26, 34, 54, 0.28);
+    --card-glass:   rgba(26, 34, 54, 0.12);
     --border:       rgba(60, 75, 100, 0.55);
-    --border-glass: rgba(245, 132, 31, 0.32);
+    --border-glass: rgba(245, 132, 31, 0.22);
     --border-strong:#3a455c;
     --fg:           #f2f4f8;
     --fg-muted:     #a8b0c0;
@@ -226,7 +226,7 @@ main.page {
   margin: 0 auto;
   padding: 2.5rem 1.25rem;
 }
-main.page--wide { max-width: 1080px; }   /* z.B. Sicherheits-Seite */
+main.page--wide { max-width: 1280px; }   /* z.B. Sicherheits-Seite */
 .hero {
   text-align: center;
   margin-bottom: 1.75rem;
@@ -244,21 +244,23 @@ main.page--wide { max-width: 1080px; }   /* z.B. Sicherheits-Seite */
   margin: 0;
 }
 
-/* ====== Card — Glassmorphism ====== */
+/* ====== Card — Glassmorphism (sehr transparent, fast schwebend) ====== */
 .card {
-  background: var(--card-glass, rgba(255, 255, 255, 0.55));
-  /* Klar definierter Rand — hebt die Karte deutlich vom Background ab */
-  border: 1.5px solid var(--border-glass, rgba(36, 83, 152, 0.35));
+  background: var(--card-glass, rgba(255, 255, 255, 0.12));
+  /* Dünner, sehr dezenter Rand — gibt nur eine Andeutung der Karte */
+  border: 1px solid var(--border-glass, rgba(36, 83, 152, 0.22));
   border-radius: var(--radius-lg);
   box-shadow:
-    0 12px 40px rgba(15, 30, 60, 0.18),
-    0 2px 6px rgba(15, 30, 60, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  padding: 1.75rem;
-  /* Sehr starker Frost-Blur: Hintergrund verschwimmt fast komplett */
-  -webkit-backdrop-filter: blur(60px) saturate(200%);
-  backdrop-filter: blur(60px) saturate(200%);
+    0 8px 32px rgba(15, 30, 60, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  padding: 2rem 2.25rem;
+  /* Moderater Frost — Inhalte bleiben klar, Hintergrund schimmert sanft durch */
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
   position: relative;
+}
+@media (max-width: 480px) {
+  .card { padding: 1.4rem 1.25rem; }
 }
 .card + .card { margin-top: 1.25rem; }
 /* Fallback wenn backdrop-filter nicht unterstützt wird */
@@ -409,9 +411,9 @@ input[type=file] {
 
 details.advanced {
   margin: 1.25rem 0 1.1rem;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(245, 132, 31, 0.25);
   border-radius: var(--radius);
-  background: var(--bg-grad-from);
+  background: rgba(245, 132, 31, 0.05);
 }
 details.advanced > summary {
   list-style: none;
@@ -419,13 +421,15 @@ details.advanced > summary {
   padding: 0.7rem 0.95rem;
   font-weight: 700;
   font-size: 0.9rem;
-  color: var(--brand-blue);
+  color: var(--brand-orange);
   user-select: none;
 }
+details.advanced > summary::-webkit-details-marker { display: none; }
 details.advanced > summary::before {
   content: "▸";
   display: inline-block;
   margin-right: 0.4rem;
+  color: var(--brand-orange);
   transition: transform 0.15s;
 }
 details.advanced[open] > summary::before { transform: rotate(90deg); }
