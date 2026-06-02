@@ -36,7 +36,7 @@
           <h2>Was passiert beim Erstellen?</h2>
           <ol>
             <li>Ihr Browser erzeugt einen <strong>frischen 256-Bit-Zufallsschlüssel</strong> über die Web-Crypto-API.</li>
-            <li>Ihr Klartext (und ggf. die Datei) werden <strong>im Browser mit AES-256-GCM verschlüsselt</strong>.</li>
+            <li>Ihr Klartext (und ggf. eine oder mehrere Dateien) werden <strong>im Browser mit AES-256-GCM verschlüsselt</strong>.</li>
             <li>Der Server erhält nur den verschlüsselten Cipher-Block + Metadaten (Ablaufzeit, Hinweistext). <strong>Den Schlüssel sieht er nie.</strong></li>
             <li>Der Browser bildet die Link-URL aus zwei Teilen: <code>https://secret.bytexx.de/s/&lt;token&gt;#&lt;schlüssel&gt;</code>. Der Teil hinter <code>#</code> ist ein URL-Fragment — Browser senden das aus technischen Gründen niemals an Server.</li>
           </ol>
@@ -46,7 +46,7 @@
             <li><strong>Rate-Limits:</strong> 10 POST/Min, 30 GET/Min und 20 Versuche/Min pro IP-Adresse.</li>
             <li><strong>Tageslimit:</strong> 24 Geheimnisse pro IP pro Tag.</li>
             <li><strong>Brute-Force-Schutz:</strong> Nach 5 falschen Passphrasen wird der Token 15 Minuten gesperrt.</li>
-            <li><strong>5 MB Limit</strong> pro Geheimnis (Datei + Text).</li>
+            <li><strong>25 MB Gesamtlimit</strong> pro Geheimnis (alle Dateien + Text zusammen).</li>
             <li><strong>Honeypot</strong> gegen automatisierte Bot-Submissions.</li>
             <li><strong>Strikte Content-Security-Policy</strong>, HSTS, X-Frame-Options DENY, kein Tracking.</li>
           </ul>
@@ -65,6 +65,7 @@
             <li><strong>Passphrase nutzen</strong>, wenn der Link über einen unsicheren Kanal (E-Mail) zum Empfänger geht. Die Passphrase separat übermitteln (Telefon, Signal, Threema).</li>
             <li><strong>Kurze Ablaufzeit</strong> wählen. Burn-after-Read aktivieren.</li>
             <li><strong>Vorsicht mit dem Hinweistext</strong> für den Empfänger — der ist nicht verschlüsselt.</li>
+            <li><strong>Persönliche Anrede</strong> in der E-Mail nutzen: in den erweiterten Optionen Ihren Namen und den Namen des Empfängers eintragen — der Empfänger erkennt sofort, von wem die Nachricht kommt, und schenkt ihr mehr Vertrauen.</li>
           </ul>
         </div>
       </div>
