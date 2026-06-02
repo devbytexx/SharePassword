@@ -317,21 +317,10 @@ main.page--wide .card li { line-height: 1.55; }
   margin-bottom: 1.1rem;         /* Abstand zur nächsten Section übernimmt der Row */
 }
 .field-row > .field { margin-bottom: 0; }   /* inneres margin entfällt */
-.field-row > .field > span {
-  font-size: 0.8rem;
-  margin-bottom: 0.3rem;
-}
+/* Inputs in der Row sind schmaler — nicht voll bis zum Spaltenende */
 .field-row input[type=text],
 .field-row input[type=email] {
-  height: 2.2rem;          /* fixe Höhe — wirkt klein und sauber */
-  padding: 0 0.7rem;
-  font-size: 0.9rem;
-  line-height: 2.2rem;
-}
-.field-row .field__help {
-  margin-top: 0.3rem;
-  font-size: 0.78rem;
-  line-height: 1.35;
+  max-width: 20rem;
 }
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
