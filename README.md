@@ -19,7 +19,8 @@ Selbst-gehostetes One-Time-Secret-Tool von [BYTEXX IT](https://bytexx.de). Ende-
 - **Strikte CSP**, HSTS, X-Frame-Options DENY, kein Tracking, keine Drittanbieter-Inhalte
 
 ### UX
-- **Multi-File-Upload** bis 25 MB gesamt — Drag & Drop oder Klick, mit Live-Größencounter
+- **Multi-File-Upload** bis 25 MB gesamt — Drag & Drop oder Klick, mit Live-Größencounter und Einzeldatei-Entfernen
+- **Passphrase-Generator**: 12-Zeichen-Vorschlag im UI mit „Übernehmen"- und „Neu"-Button (kuratiertes Zeichen-Set ohne verwechselbare Zeichen 0/O/1/l/I), plus Anzeigen/Verbergen-Toggle am Eingabefeld
 - **„Per E-Mail teilen"-Button** öffnet das Mailprogramm mit vorausgefülltem Body inkl. Link, Ablauf, Hinweistext, persönlicher Anrede (Sender-/Empfänger-Name optional)
 - **E-Mail-Benachrichtigung** an den Absender beim ersten Abruf
 - **BYTEXX Corporate Identity** — Lato-Schrift, BYTEXX-Blau + Orange, animierter Hexagon-Hintergrund, Glaseffekt-Cards
