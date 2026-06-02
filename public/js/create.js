@@ -64,6 +64,7 @@ function setupPassphraseSuggest() {
   const codeEl  = document.getElementById('pass-suggest-text');
   const applyBtn = document.getElementById('pass-apply');
   const regenBtn = document.getElementById('pass-regen');
+  const showBtn  = document.getElementById('pass-show');
   const input   = document.getElementById('passphrase');
   if (!codeEl || !applyBtn || !regenBtn || !input) return;
 
@@ -73,11 +74,19 @@ function setupPassphraseSuggest() {
 
   applyBtn.addEventListener('click', () => {
     input.value = codeEl.textContent;
-    // Kurz im Klartext zeigen, damit der User sieht was übernommen wurde
-    input.type = 'text';
-    setTimeout(() => { input.type = 'password'; }, 1800);
     input.focus();
   });
+
+  // Anzeigen/Verbergen-Toggle oben rechts neben dem Label
+  if (showBtn) {
+    showBtn.addEventListener('click', () => {
+      const willShow = input.type === 'password';
+      input.type = willShow ? 'text' : 'password';
+      showBtn.textContent = willShow
+        ? (strings['create.passphraseHide'] || 'Verbergen')
+        : (strings['create.passphraseShow'] || 'Anzeigen');
+    });
+  }
 }
 
 function setupHoneypot() {

@@ -22,6 +22,8 @@
   "create.advancedToggle": "Advanced options",
   "create.advancedLead": "These fields are optional. Recommendation: use a passphrase when sending the link over an untrusted channel like email.",
   "create.passphraseLabel": "Passphrase (optional)",
+  "create.passphraseShow": "Show",
+  "create.passphraseHide": "Hide",
   "create.passphraseSuggestLabel": "Suggestion:",
   "create.passphraseApply": "Use",
   "create.passphraseRegen": "New",

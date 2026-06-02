@@ -22,6 +22,8 @@
   "create.advancedToggle": "Erweiterte Optionen",
   "create.advancedLead": "Diese Felder sind optional. Empfehlung: Passphrase verwenden, wenn der Link über einen unsicheren Kanal (z. B. E-Mail) zum Empfänger geht.",
   "create.passphraseLabel": "Passphrase (optional)",
+  "create.passphraseShow": "Anzeigen",
+  "create.passphraseHide": "Verbergen",
   "create.passphraseSuggestLabel": "Vorschlag:",
   "create.passphraseApply": "Übernehmen",
   "create.passphraseRegen": "Neu",

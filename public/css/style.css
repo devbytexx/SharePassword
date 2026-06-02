@@ -334,6 +334,29 @@ textarea.hint-textarea {
   font-size: 0.95rem;
 }
 
+/* Field-Head: Label + optionaler Mini-Link (z.B. „Anzeigen") nebeneinander */
+.field__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+  gap: 0.6rem;
+}
+.field__head > span {
+  margin-bottom: 0 !important;
+}
+.link-mini {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--brand-orange);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.link-mini:hover { text-decoration: underline; color: var(--brand-orange-dark); }
+
 /* Passphrase-Vorschlag mit Übernehmen / Neu */
 .pass-suggest {
   display: flex;
