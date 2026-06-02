@@ -320,7 +320,7 @@ main.page--wide .card li { line-height: 1.55; }
 /* Inputs in der Row sind schmaler — nehmen nur den nötigen Platz ein */
 .field-row input[type=text],
 .field-row input[type=email] {
-  max-width: 16rem;
+  max-width: 20rem;
 }
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
