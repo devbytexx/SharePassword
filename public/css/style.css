@@ -643,6 +643,10 @@ details.advanced > .advanced__lead {
   font-style: italic;
   color: var(--fg-muted);
   font-size: 0.95rem;
+  /* Lange ungetrennte Strings (z.B. '111111...') sollen die Seite
+     nicht aufreißen — überall umbrechen, notfalls mitten im Wort. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 pre.plaintext {
   white-space: pre-wrap;
