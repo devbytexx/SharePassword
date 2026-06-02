@@ -5,6 +5,8 @@ import {
 import { generateToken, hashIp, tokenToBase64Url, base64UrlToToken }
   from '../lib/crypto-utils.js';
 import { sendBurnMail } from '../lib/mailer.js';
+import * as quota from '../lib/quota.js';
+import { verifyToken as verifyTurnstile } from '../lib/turnstile.js';
 
 const createSchema = {
   body: {
@@ -18,10 +20,14 @@ const createSchema = {
       hasPassphrase:  { type: 'boolean' },
       passphraseSalt: { type: ['string', 'null'] },
       notifyEmail:    { type: ['string', 'null'], maxLength: 255, pattern: '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$' },
-      senderHint:     { type: ['string', 'null'], maxLength: 120 }
+      senderHint:     { type: ['string', 'null'], maxLength: 120 },
+      honeypot:       { type: 'string', maxLength: 255 },
+      turnstileToken: { type: ['string', 'null'], maxLength: 2048 }
     }
   }
 };
+
+quota.startCleanup();
 
 export default async function secretRoutes(app) {
   const cfg = app.config;
@@ -31,6 +37,28 @@ export default async function secretRoutes(app) {
     config: { rateLimit: { max: 10, timeWindow: '1 minute' } }
   }, async (req, reply) => {
     const b = req.body;
+
+    // Honeypot: echte Nutzer sehen das Feld nicht. Wenn gefüllt → Bot.
+    if (b.honeypot && b.honeypot.trim() !== '') {
+      req.log.warn('honeypot triggered');
+      return reply.code(400).send({ error: 'honeypot' });
+    }
+
+    // Tageslimit pro IP (HMAC-Hash als Schlüssel, kein Klartext gespeichert)
+    const ipHashHex = hashIp(req.ip || 'unknown', cfg.ipHashPepper).toString('hex');
+    const q = quota.check(ipHashHex);
+    if (!q.allowed) {
+      return reply.code(429).send({ error: 'daily_limit', retryAfter: 86400 });
+    }
+
+    // Cloudflare Turnstile — nur wenn aktiviert (Secret in .env)
+    if (cfg.turnstileSecret) {
+      const tv = await verifyTurnstile(b.turnstileToken, cfg.turnstileSecret, req.ip);
+      if (!tv.success) {
+        req.log.warn({ reason: tv.reason }, 'turnstile rejected');
+        return reply.code(403).send({ error: 'turnstile_failed' });
+      }
+    }
 
     if (b.hasPassphrase && !b.passphraseSalt) {
       return reply.code(400).send({ error: 'passphraseSalt required when hasPassphrase' });
@@ -62,6 +90,8 @@ export default async function secretRoutes(app) {
       expiresAt,
       sizeBytes: ciphertext.length
     });
+
+    quota.increment(ipHashHex);
 
     return {
       token: tokenToBase64Url(token),

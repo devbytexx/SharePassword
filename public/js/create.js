@@ -11,6 +11,8 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
 
 let strings = {};
 let currentLangCode = 'de';
+let turnstileWidgetId = null;
+let turnstileSiteKey = null;
 
 (async () => {
   currentLangCode = currentLang();
@@ -38,9 +40,94 @@ let currentLangCode = 'de';
   document.getElementById('new-btn').addEventListener('click', () => {
     location.reload();
   });
+
+  setupDropzone();
+  setupTurnstile();
 })();
 
+async function setupTurnstile() {
+  try {
+    const res = await fetch('/api/public-config');
+    if (!res.ok) return;
+    const cfg = await res.json();
+    if (!cfg.turnstileSiteKey) return;       // Captcha deaktiviert → fertig
+    turnstileSiteKey = cfg.turnstileSiteKey;
+
+    const slot = document.getElementById('turnstile-slot');
+    slot.hidden = false;
+
+    // Cloudflare-Skript on-demand laden
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady&render=explicit';
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+
+    window.onTurnstileReady = () => {
+      turnstileWidgetId = window.turnstile.render('#turnstile-slot', {
+        sitekey: turnstileSiteKey,
+        theme: 'auto',
+        size: 'flexible'
+      });
+    };
+  } catch (_) { /* offline / non-blocking */ }
+}
+
+function getTurnstileToken() {
+  if (!turnstileSiteKey || !window.turnstile || turnstileWidgetId == null) return null;
+  return window.turnstile.getResponse(turnstileWidgetId) || null;
+}
+
+function setupDropzone() {
+  const zone = document.getElementById('dropzone');
+  const input = document.getElementById('file');
+  const fileLabel = document.getElementById('dropzone-file');
+  if (!zone || !input) return;
+
+  function showFile(file) {
+    if (!file) {
+      fileLabel.hidden = true;
+      fileLabel.textContent = '';
+      zone.classList.remove('has-file');
+      return;
+    }
+    const kb = file.size / 1024;
+    const sizeStr = kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB';
+    fileLabel.textContent = `${file.name} · ${sizeStr}`;
+    fileLabel.hidden = false;
+    zone.classList.add('has-file');
+  }
+
+  input.addEventListener('change', () => showFile(input.files[0] || null));
+
+  ['dragenter', 'dragover'].forEach(ev => {
+    zone.addEventListener(ev, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      zone.classList.add('is-dragover');
+    });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    zone.addEventListener(ev, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      zone.classList.remove('is-dragover');
+    });
+  });
+  zone.addEventListener('drop', e => {
+    const dt = e.dataTransfer;
+    if (dt && dt.files && dt.files.length) {
+      input.files = dt.files;
+      showFile(dt.files[0]);
+    }
+  });
+}
+
 async function handleSubmit() {
+  // Honeypot: echte Nutzer sehen das Feld nicht → muss leer sein
+  const hp = document.getElementById('hp_email');
+  const honeypotValue = hp && hp.value ? hp.value : '';
+
   const text = document.getElementById('plaintext').value;
   const file = document.getElementById('file').files[0] || null;
   const expiresIn = parseInt(document.getElementById('expires').value, 10);
@@ -89,7 +176,9 @@ async function handleSubmit() {
     hasPassphrase: !!passphrase,
     passphraseSalt: passphraseSaltB64,
     notifyEmail,
-    senderHint
+    senderHint,
+    honeypot: honeypotValue,
+    turnstileToken: getTurnstileToken()
   };
 
   const res = await fetch('/api/secret', {
@@ -97,7 +186,17 @@ async function handleSubmit() {
     body: JSON.stringify(body)
   });
   if (!res.ok) {
-    if (res.status === 429) throw new Error(strings['create.error.rateLimit'] || 'Rate-Limit erreicht. Bitte später erneut.');
+    if (res.status === 429) {
+      const err = await res.json().catch(() => ({}));
+      if (err.error === 'daily_limit') {
+        throw new Error(strings['create.error.dailyLimit'] || 'Tageslimit erreicht.');
+      }
+      throw new Error(strings['create.error.rateLimit'] || 'Rate-Limit erreicht. Bitte später erneut.');
+    }
+    if (res.status === 400) {
+      const err = await res.json().catch(() => ({}));
+      if (err.error === 'honeypot') throw new Error(strings['create.error.honeypot'] || 'Anfrage abgelehnt.');
+    }
     throw new Error(`Fehler ${res.status}`);
   }
   const { token, expiresAt } = await res.json();

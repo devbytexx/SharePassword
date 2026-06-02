@@ -38,10 +38,33 @@
                     data-i18n-placeholder="create.placeholder"></textarea>
         </label>
 
-        <label class="field">
+        <div class="field">
           <span data-i18n="create.fileLabel">Datei (optional, max. 5 MB)</span>
-          <input type="file" id="file">
-        </label>
+          <label id="dropzone" class="dropzone" for="file">
+            <input type="file" id="file" class="dropzone__input">
+            <div class="dropzone__inner">
+              <svg class="dropzone__icon" viewBox="0 0 24 24" width="28" height="28"
+                   fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              <span class="dropzone__text" data-i18n="create.dropzoneText">
+                Datei hierher ziehen oder klicken
+              </span>
+              <span class="dropzone__hint" data-i18n="create.dropzoneHint">
+                max. 5 MB · bleibt verschlüsselt im Browser
+              </span>
+              <span id="dropzone-file" class="dropzone__file" hidden></span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Honeypot: für Bots, von echten Nutzern nie sichtbar -->
+        <div class="hp" aria-hidden="true">
+          <label>Bitte nicht ausfüllen: <input type="text" id="hp_email" name="hp_email" tabindex="-1" autocomplete="off"></label>
+        </div>
 
         <label class="field">
           <span data-i18n="create.expiresLabel">Ablauf</span>
@@ -78,8 +101,41 @@
           </label>
         </details>
 
+        <!-- Cloudflare Turnstile — wird nur eingeblendet, wenn Site-Key in .env gesetzt -->
+        <div id="turnstile-slot" class="turnstile-slot" hidden></div>
+
         <button type="submit" class="btn btn--primary" data-i18n="create.submit">Link erzeugen</button>
       </form>
+    </section>
+
+    <!-- ===== Transparenz / Wie funktioniert das ===== -->
+    <section id="how-it-works" class="card card--transparent">
+      <h2 class="transparency__title" data-i18n="transparency.title">Wie sicher ist das?</h2>
+      <ul class="transparency__list">
+        <li>
+          <strong data-i18n="transparency.e2e.title">Ende-zu-Ende verschlüsselt:</strong>
+          <span data-i18n="transparency.e2e.body">Verschlüsselung und Entschlüsselung passieren ausschließlich in Ihrem Browser (AES-256-GCM). Der Server sieht zu keinem Zeitpunkt den Klartext.</span>
+        </li>
+        <li>
+          <strong data-i18n="transparency.key.title">Schlüssel im URL-Fragment (#…):</strong>
+          <span data-i18n="transparency.key.body">Der Schlüssel steckt hinter dem Doppelkreuz der URL. Browser senden diesen Teil nie an Server — auch nicht an uns.</span>
+        </li>
+        <li>
+          <strong data-i18n="transparency.ip.title">IP nur als HMAC-Hash:</strong>
+          <span data-i18n="transparency.ip.body">Wir hashen Ihre IP mit geheimem Schlüssel (HMAC-SHA-256) zur Missbrauchserkennung. Die Klartext-IP wird nicht gespeichert.</span>
+        </li>
+        <li>
+          <strong data-i18n="transparency.ephemeral.title">Automatische Löschung:</strong>
+          <span data-i18n="transparency.ephemeral.body">Nach erstem Abruf oder nach Ablauf wird das Geheimnis aus der Datenbank entfernt. Das Backup spart die Geheimnis-Tabelle bewusst aus.</span>
+        </li>
+        <li>
+          <strong data-i18n="transparency.limits.title">Limits gegen Missbrauch:</strong>
+          <span data-i18n="transparency.limits.body">Pro IP: 24 Geheimnisse pro Tag, 10 Anfragen/Minute. Tokens werden nach 5 falschen Passphrasen für 15 Minuten gesperrt.</span>
+        </li>
+      </ul>
+      <p class="transparency__more">
+        <a href="/sicherheit.html" data-i18n="transparency.more">Mehr Details →</a>
+      </p>
     </section>
 
     <!-- ===== Result section ===== -->
@@ -104,6 +160,7 @@
   </main>
 
   <footer class="site-footer">
+    <a href="/sicherheit.html" data-i18n="footer.security">Sicherheit</a>
     <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
     <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
     <span class="brand__title">© BYTEXX IT</span>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sicherheit – SharePassword</title>
+  <script src="/js/theme-init.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
+</head>
+<body>
+  <canvas id="hex-canvas" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="/" class="brand">
+        <img src="/img/bytexx-logo.png" alt="BYTEXX" class="brand__logo">
+        <span class="brand__title">SharePassword</span>
+      </a>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Theme wechseln"></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <h1>So funktioniert SharePassword</h1>
+      <p class="lead">
+        SharePassword ist ein <strong>Ende-zu-Ende-verschlüsseltes Werkzeug</strong> zum
+        einmaligen Teilen sensibler Informationen. Diese Seite erklärt im Detail, was
+        wir tun — und vor allem, was wir <em>nicht</em> tun.
+      </p>
+
+      <h2>Was passiert beim Erstellen eines Geheimnisses?</h2>
+      <ol>
+        <li>Ihr Browser erzeugt einen <strong>frischen 256-Bit-Zufallsschlüssel</strong> über die Web-Crypto-API.</li>
+        <li>Ihr Klartext (und ggf. die Datei) werden <strong>im Browser mit AES-256-GCM verschlüsselt</strong>.</li>
+        <li>Der Server erhält nur den verschlüsselten Cipher-Block + Metadaten (Ablaufzeit, Hinweistext). <strong>Den Schlüssel sieht er nie.</strong></li>
+        <li>Der Browser bildet die Link-URL aus zwei Teilen: <code>https://secret.bytexx.de/s/&lt;token&gt;#&lt;schlüssel&gt;</code>. Der Teil hinter <code>#</code> ist ein URL-Fragment — Browser senden das aus technischen Gründen niemals an Server.</li>
+      </ol>
+
+      <h2>Was passiert beim Abrufen?</h2>
+      <ol>
+        <li>Der Empfänger öffnet die URL. Der Browser holt den Cipher-Block vom Server.</li>
+        <li>Der Schlüssel aus dem URL-Fragment entschlüsselt den Cipher-Block <strong>lokal im Browser</strong> — der Klartext erscheint.</li>
+        <li>Ist „Nach erstem Abruf löschen" aktiv, meldet der Browser dem Server: gelesen. Der Eintrag wird sofort aus der Datenbank entfernt.</li>
+      </ol>
+
+      <h2>Welche Daten speichern wir?</h2>
+      <table class="datatable">
+        <tr><th>Datenfeld</th><th>Form</th><th>Lebensdauer</th></tr>
+        <tr><td>Verschlüsselter Inhalt</td><td>Cipher-Block (für uns unlesbar)</td><td>bis Ablauf oder erstem Abruf</td></tr>
+        <tr><td>Hinweistext für den Empfänger</td><td>Klartext (sichtbar vor Entschlüsselung)</td><td>bis Ablauf oder erstem Abruf</td></tr>
+        <tr><td>Benachrichtigungs-E-Mail (optional)</td><td>Klartext (nur für die Mail)</td><td>bis Ablauf oder erstem Abruf</td></tr>
+        <tr><td>IP-Adresse</td><td>HMAC-SHA-256-Hash mit geheimem Schlüssel</td><td>max. 24 h (nur für Brute-Force-Schutz)</td></tr>
+        <tr><td>Klartext-Inhalt / Schlüssel / URL-Fragment</td><td>—</td><td><strong>wird nie gespeichert oder geloggt</strong></td></tr>
+      </table>
+
+      <h2>Schutz gegen Missbrauch</h2>
+      <ul>
+        <li><strong>Rate-Limits:</strong> 10 POST/Min, 30 GET/Min und 20 Versuche/Min pro IP-Adresse.</li>
+        <li><strong>Tageslimit:</strong> 24 Geheimnisse pro IP pro Tag.</li>
+        <li><strong>Brute-Force-Schutz:</strong> Nach 5 falschen Passphrasen wird der Token 15 Minuten gesperrt.</li>
+        <li><strong>5 MB Limit</strong> pro Geheimnis (Datei + Text).</li>
+        <li><strong>Honeypot</strong> gegen automatisierte Bot-Submissions.</li>
+        <li><strong>Strikte Content-Security-Policy</strong>, HSTS, X-Frame-Options DENY, kein Tracking.</li>
+      </ul>
+
+      <h2>Was Sie selbst tun können</h2>
+      <ul>
+        <li><strong>Passphrase nutzen</strong>, wenn der Link über einen unsicheren Kanal (E-Mail) zum Empfänger geht. Die Passphrase separat übermitteln (Telefon, Signal, Threema).</li>
+        <li><strong>Kurze Ablaufzeit</strong> wählen. Burn-after-Read aktivieren.</li>
+        <li><strong>Vorsicht mit dem Hinweistext</strong> für den Empfänger — der ist nicht verschlüsselt.</li>
+      </ul>
+
+      <h2>Open Source &amp; Offene Doku</h2>
+      <p>
+        SharePassword basiert auf <strong>Node.js, Fastify, MariaDB</strong> und der nativen <strong>Web-Crypto-API</strong> Ihres Browsers — kein Code, der Schlüssel oder Klartext sieht, läuft auf unserem Server. Wir setzen keine Tracking-Skripte ein und laden keine Inhalte von Drittanbietern (Google Fonts, CDN-JavaScript, etc.).
+      </p>
+
+      <p><a class="btn btn--ghost" href="/">← Zurück zum Geheimnis-Erstellen</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a href="/sicherheit.html">Sicherheit</a>
+    <a href="/impressum.html">Impressum</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+    <span class="brand__title">© BYTEXX IT</span>
+  </footer>
+
+  <script type="module">
+    import { initThemeToggle } from '/js/theme.js';
+    initThemeToggle();
+  </script>
+  <script type="module" src="/js/hexagon.js"></script>
+</body>
+</html>

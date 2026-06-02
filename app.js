@@ -40,6 +40,12 @@ export async function buildApp(opts = {}) {
 
   app.get('/api/health', async () => ({ status: 'ok' }));
 
+  // Browser holt sich hier den Turnstile-Site-Key (oder null falls inaktiv)
+  app.get('/api/public-config', async () => ({
+    turnstileSiteKey: config.turnstileSiteKey || null,
+    dailyMaxPerIp:    config.dailyMaxPerIp
+  }));
+
   await app.register(rateLimit, { global: false });
   await app.register(secretRoutes);
   await app.register(pageRoutes);

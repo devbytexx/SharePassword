@@ -5,20 +5,19 @@
 const HEX_RADIUS = 80;
 const HEX_MAX_SPEED = 0.09;
 const HEX_GAP = 3;
-const HEX_LINE_WIDTH = 0.5;
+const HEX_LINE_WIDTH = 1.2;
 
 const SQRT3 = Math.sqrt(3);
 
 let canvas, ctx, hexagons = [], rafId = null;
 
 function readThemeColors() {
-  const root = getComputedStyle(document.documentElement);
-  // Linien-Farbe (Orange) und Glow je nach Theme
+  // Hexagon-Farben passend zum Theme — sichtbar, aber nicht ablenkend.
   const dark = isDark();
   return {
-    line: dark ? '#F5841F' : '#F5841F',
-    shadow: dark ? 'rgba(245,132,31,0.35)' : 'rgba(36,83,152,0.25)',
-    alpha: dark ? 0.35 : 0.45
+    line: dark ? '#F5841F' : '#245398',
+    shadow: dark ? 'rgba(245,132,31,0.45)' : 'rgba(36,83,152,0.35)',
+    alpha: dark ? 0.65 : 0.55
   };
 }
 
