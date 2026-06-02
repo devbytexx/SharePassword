@@ -1,0 +1,7 @@
+-- Template. On the server, copy to sql/002-grants.sql with the real password
+-- generated via: openssl rand -base64 32
+CREATE USER IF NOT EXISTS 'sharepass'@'localhost'
+  IDENTIFIED BY 'REPLACE_ME_WITH_GENERATED_PASSWORD';
+GRANT SELECT, INSERT, UPDATE, DELETE ON sharepassword.*
+  TO 'sharepass'@'localhost';
+FLUSH PRIVILEGES;
