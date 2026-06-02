@@ -1,0 +1,20 @@
+{
+  "name": "sharepassword",
+  "version": "0.1.0",
+  "description": "Self-hosted one-time-secret tool (BYTEXX)",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test --test-reporter=spec tests/"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^9.1.0",
+    "@fastify/static": "^7.0.4",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "mysql2": "^3.11.0",
+    "nodemailer": "^6.9.14"
+  }
+}
