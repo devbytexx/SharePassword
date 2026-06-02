@@ -31,8 +31,8 @@ test('POST /api/secret creates a secret and returns base64url token', { skip: !d
   await closePool();
 });
 
-test('POST /api/secret rejects invalid expiresIn', { skip: !dbAvailable() }, async () => {
-  const app = await buildApp();
+test('POST /api/secret rejects invalid expiresIn', async () => {
+  const app = await buildApp({ skipDb: true, skipMailer: true });
   const res = await app.inject({
     method: 'POST', url: '/api/secret',
     payload: {
@@ -40,6 +40,55 @@ test('POST /api/secret rejects invalid expiresIn', { skip: !dbAvailable() }, asy
       expiresIn: 12345,
       burnAfterRead: true, hasPassphrase: false,
       passphraseSalt: null, notifyEmail: null, senderHint: null
+    }
+  });
+  assert.equal(res.statusCode, 400);
+  await app.close();
+});
+
+test('POST /api/secret rejects hasPassphrase without salt', async () => {
+  const app = await buildApp({ skipDb: true, skipMailer: true });
+  const res = await app.inject({
+    method: 'POST', url: '/api/secret',
+    payload: {
+      ciphertext: Buffer.from('x').toString('base64'),
+      expiresIn: 3600, burnAfterRead: true,
+      hasPassphrase: true, passphraseSalt: null,
+      notifyEmail: null, senderHint: null
+    }
+  });
+  assert.equal(res.statusCode, 400);
+  assert.match(res.json().error, /passphraseSalt/);
+  await app.close();
+});
+
+test('POST /api/secret rejects salt of wrong length', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  const res = await app.inject({
+    method: 'POST', url: '/api/secret',
+    payload: {
+      ciphertext: Buffer.from('x').toString('base64'),
+      expiresIn: 3600, burnAfterRead: true,
+      hasPassphrase: true,
+      passphraseSalt: Buffer.alloc(8).toString('base64'),
+      notifyEmail: null, senderHint: null
+    }
+  });
+  assert.equal(res.statusCode, 400);
+  assert.match(res.json().error, /16 bytes/);
+  await app.close();
+  await closePool();
+});
+
+test('POST /api/secret rejects empty ciphertext (after base64 decode)', { skip: !dbAvailable() }, async () => {
+  const app = await buildApp();
+  const res = await app.inject({
+    method: 'POST', url: '/api/secret',
+    payload: {
+      ciphertext: '!!!',
+      expiresIn: 3600, burnAfterRead: true,
+      hasPassphrase: false, passphraseSalt: null,
+      notifyEmail: null, senderHint: null
     }
   });
   assert.equal(res.statusCode, 400);

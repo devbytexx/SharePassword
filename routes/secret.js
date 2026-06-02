@@ -11,7 +11,7 @@ const createSchema = {
     required: ['ciphertext', 'expiresIn', 'burnAfterRead', 'hasPassphrase'],
     additionalProperties: false,
     properties: {
-      ciphertext:     { type: 'string', minLength: 1, maxLength: 10 * 1024 * 1024 },
+      ciphertext:     { type: 'string', minLength: 1, maxLength: 7 * 1024 * 1024 },
       expiresIn:      { type: 'integer', enum: [3600, 86400, 604800, 2592000] },
       burnAfterRead:  { type: 'boolean' },
       hasPassphrase:  { type: 'boolean' },
