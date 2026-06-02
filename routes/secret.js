@@ -26,7 +26,10 @@ const createSchema = {
 export default async function secretRoutes(app) {
   const cfg = app.config;
 
-  app.post('/api/secret', { schema: createSchema }, async (req, reply) => {
+  app.post('/api/secret', {
+    schema: createSchema,
+    config: { rateLimit: { max: 10, timeWindow: '1 minute' } }
+  }, async (req, reply) => {
     const b = req.body;
 
     if (b.hasPassphrase && !b.passphraseSalt) {
@@ -78,7 +81,10 @@ export default async function secretRoutes(app) {
     try { return base64UrlToToken(s); } catch { return null; }
   }
 
-  app.get('/api/secret/:token', { schema: tokenParamSchema }, async (req, reply) => {
+  app.get('/api/secret/:token', {
+    schema: tokenParamSchema,
+    config: { rateLimit: { max: 30, timeWindow: '1 minute' } }
+  }, async (req, reply) => {
     const tokenBuf = parseToken(req.params.token);
     if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
 
@@ -124,7 +130,10 @@ export default async function secretRoutes(app) {
     return reply.code(204).send();
   });
 
-  app.post('/api/secret/:token/attempt', { schema: tokenParamSchema }, async (req, reply) => {
+  app.post('/api/secret/:token/attempt', {
+    schema: tokenParamSchema,
+    config: { rateLimit: { max: 20, timeWindow: '1 minute' } }
+  }, async (req, reply) => {
     const tokenBuf = parseToken(req.params.token);
     if (!tokenBuf) return reply.code(400).send({ error: 'invalid_token' });
     const ipHash = hashIp(req.ip || 'unknown', cfg.ipHashPepper);

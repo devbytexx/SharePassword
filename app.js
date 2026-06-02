@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import rateLimit from '@fastify/rate-limit';
 import { loadConfig } from './lib/config.js';
 import { initPool } from './lib/db.js';
 import { initMailer } from './lib/mailer.js';
@@ -19,6 +20,7 @@ export async function buildApp(opts = {}) {
 
   app.get('/api/health', async () => ({ status: 'ok' }));
 
+  await app.register(rateLimit, { global: false });
   await app.register(secretRoutes);
 
   return app;
