@@ -5,70 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SharePassword – BYTEXX</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
   <header class="site-header">
-    <a href="/" class="brand">BYTEXX SharePassword</a>
-    <button id="lang-toggle" class="lang-toggle" data-i18n="footer.lang">EN</button>
+    <div class="site-header__inner">
+      <a href="/" class="brand">
+        <img src="/img/bytexx-logo.png" alt="BYTEXX" class="brand__logo">
+        <span class="brand__title">SharePassword</span>
+      </a>
+      <button id="lang-toggle" class="lang-toggle" data-i18n="footer.lang">EN</button>
+    </div>
   </header>
 
   <main class="page">
-    <h1 data-i18n="create.title">Geheimnis sicher teilen</h1>
-    <p class="lead" data-i18n="create.lead"></p>
+    <section class="hero">
+      <h1 data-i18n="create.title">Geheimnis sicher teilen</h1>
+      <p class="lead" data-i18n="create.lead"></p>
+    </section>
 
-    <form id="create-form">
-      <label class="field">
-        <textarea id="plaintext" rows="6" required
-                  data-i18n-placeholder="create.placeholder"></textarea>
-      </label>
-
-      <label class="field">
-        <span data-i18n="create.fileLabel">Datei</span>
-        <input type="file" id="file">
-      </label>
-
-      <label class="field">
-        <span data-i18n="create.expiresLabel">Ablauf</span>
-        <select id="expires">
-          <option value="3600"   data-i18n="create.expires.1h">1 Stunde</option>
-          <option value="86400"  data-i18n="create.expires.1d">1 Tag</option>
-          <option value="604800" data-i18n="create.expires.7d" selected>1 Woche</option>
-          <option value="2592000" data-i18n="create.expires.30d">30 Tage</option>
-        </select>
-      </label>
-
-      <label class="field checkbox">
-        <input type="checkbox" id="burn" checked>
-        <span data-i18n="create.burnLabel">Nach erstem Abruf löschen</span>
-      </label>
-
-      <details class="advanced">
-        <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
+    <!-- ===== Create form ===== -->
+    <section id="form-section" class="card">
+      <form id="create-form" novalidate>
         <label class="field">
-          <span data-i18n="create.passphraseLabel">Passphrase</span>
-          <input type="password" id="passphrase" autocomplete="new-password">
+          <span data-i18n="create.textareaLabel">Inhalt</span>
+          <textarea id="plaintext" rows="6" required
+                    data-i18n-placeholder="create.placeholder"></textarea>
         </label>
-        <label class="field">
-          <span data-i18n="create.notifyLabel">Benachrichtigungs-E-Mail</span>
-          <input type="email" id="notify-email">
-        </label>
-        <label class="field">
-          <span data-i18n="create.hintLabel">Hinweis für den Empfänger</span>
-          <input type="text" id="sender-hint" maxlength="120">
-        </label>
-      </details>
 
-      <button type="submit" class="btn-primary" data-i18n="create.submit">Link erzeugen</button>
-    </form>
+        <label class="field">
+          <span data-i18n="create.fileLabel">Datei (optional, max. 5 MB)</span>
+          <input type="file" id="file">
+        </label>
 
-    <section id="result" hidden>
-      <h2 data-i18n="create.resultTitle">Fertig</h2>
-      <div class="result-link">
-        <input id="result-url" type="text" readonly>
-        <button id="copy-btn" type="button" data-i18n="create.copy">Kopieren</button>
+        <label class="field">
+          <span data-i18n="create.expiresLabel">Ablauf</span>
+          <select id="expires">
+            <option value="3600"    data-i18n="create.expires.1h">1 Stunde</option>
+            <option value="86400"   data-i18n="create.expires.1d">1 Tag</option>
+            <option value="604800"  data-i18n="create.expires.7d" selected>1 Woche</option>
+            <option value="2592000" data-i18n="create.expires.30d">30 Tage</option>
+          </select>
+        </label>
+
+        <label class="field checkbox">
+          <input type="checkbox" id="burn" checked>
+          <span data-i18n="create.burnLabel">Nach erstem Abruf löschen</span>
+        </label>
+
+        <details class="advanced">
+          <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
+          <label class="field">
+            <span data-i18n="create.passphraseLabel">Passphrase (optional)</span>
+            <input type="password" id="passphrase" autocomplete="new-password">
+          </label>
+          <label class="field">
+            <span data-i18n="create.notifyLabel">Benachrichtigungs-E-Mail (optional)</span>
+            <input type="email" id="notify-email">
+          </label>
+          <label class="field">
+            <span data-i18n="create.hintLabel">Hinweis für den Empfänger (sichtbar vor Entschlüsselung)</span>
+            <input type="text" id="sender-hint" maxlength="120">
+          </label>
+        </details>
+
+        <button type="submit" class="btn btn--primary" data-i18n="create.submit">Link erzeugen</button>
+      </form>
+    </section>
+
+    <!-- ===== Result section ===== -->
+    <section id="result-section" class="card" hidden>
+      <h2 class="result__title" data-i18n="create.resultTitle">Fertig</h2>
+      <p class="result__lead" data-i18n="create.resultLead"></p>
+
+      <div class="result__url-box">
+        <input id="result-url" type="text" readonly aria-label="Link">
+        <button id="copy-btn" type="button" class="btn btn--secondary" data-i18n="create.copy">Kopieren</button>
       </div>
-      <p class="muted">
-        <span data-i18n="create.expiresAt">Gültig bis</span>: <span id="result-expires"></span>
+
+      <div class="result__actions">
+        <a id="mail-btn" href="#" class="btn btn--ghost" data-i18n="create.mail">Per E-Mail teilen</a>
+        <button id="new-btn" type="button" class="btn btn--ghost" data-i18n="create.new">Neues Geheimnis</button>
+      </div>
+
+      <p class="result__meta">
+        <span data-i18n="create.expiresAt">Gültig bis</span>: <strong id="result-expires"></strong>
       </p>
     </section>
   </main>
@@ -76,7 +97,10 @@
   <footer class="site-footer">
     <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
     <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
+    <span class="brand__title">© BYTEXX IT</span>
   </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="/js/create.js"></script>
 </body>

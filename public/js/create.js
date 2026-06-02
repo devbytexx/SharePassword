@@ -6,13 +6,16 @@ import {
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 
+let strings = {};
+let currentLangCode = 'de';
+
 (async () => {
-  const lang = currentLang();
-  const strings = await loadStrings(lang);
+  currentLangCode = currentLang();
+  strings = await loadStrings(currentLangCode);
   apply(strings);
 
   document.getElementById('lang-toggle').addEventListener('click', () => {
-    setLang(lang === 'de' ? 'en' : 'de');
+    setLang(currentLangCode === 'de' ? 'en' : 'de');
   });
 
   document.getElementById('create-form').addEventListener('submit', async (e) => {
@@ -20,17 +23,21 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
     const btn = e.target.querySelector('button[type=submit]');
     btn.disabled = true;
     try {
-      await handleSubmit(strings);
+      await handleSubmit();
     } catch (err) {
       console.error(err);
-      alert(err.message || String(err));
+      showError(err.message || String(err));
     } finally {
       btn.disabled = false;
     }
   });
+
+  document.getElementById('new-btn').addEventListener('click', () => {
+    location.reload();
+  });
 })();
 
-async function handleSubmit(strings) {
+async function handleSubmit() {
   const text = document.getElementById('plaintext').value;
   const file = document.getElementById('file').files[0] || null;
   const expiresIn = parseInt(document.getElementById('expires').value, 10);
@@ -39,10 +46,15 @@ async function handleSubmit(strings) {
   const notifyEmail = document.getElementById('notify-email').value.trim() || null;
   const senderHint = document.getElementById('sender-hint').value.trim() || null;
 
+  if (!text && !file) {
+    showError(strings['create.error.empty'] || 'Bitte Text oder Datei angeben.');
+    return;
+  }
+
   let filePayload = null;
   if (file) {
     if (file.size > MAX_FILE_BYTES) {
-      alert('Datei zu groß (max. 5 MB).');
+      showError(strings['create.error.fileTooLarge'] || 'Datei zu groß (max. 5 MB).');
       return;
     }
     const buf = new Uint8Array(await file.arrayBuffer());
@@ -61,8 +73,7 @@ async function handleSubmit(strings) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const kek = await deriveKekFromPassphrase(passphrase, salt);
     const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', key));
-    const wrapped = wrapKey(rawKey, kek);
-    keyForUrl = wrapped;
+    keyForUrl = wrapKey(rawKey, kek);
     passphraseSaltB64 = bytesToBase64(salt);
   } else {
     keyForUrl = new Uint8Array(await crypto.subtle.exportKey('raw', key));
@@ -83,19 +94,77 @@ async function handleSubmit(strings) {
     body: JSON.stringify(body)
   });
   if (!res.ok) {
-    if (res.status === 429) throw new Error('Rate-Limit erreicht. Bitte später erneut.');
+    if (res.status === 429) throw new Error(strings['create.error.rateLimit'] || 'Rate-Limit erreicht. Bitte später erneut.');
     throw new Error(`Fehler ${res.status}`);
   }
   const { token, expiresAt } = await res.json();
-
   const url = `${location.origin}/s/${token}#${bytesToBase64Url(keyForUrl)}`;
-  document.getElementById('result-url').value = url;
-  document.getElementById('result-expires').textContent =
-    new Date(expiresAt * 1000).toLocaleString();
-  document.getElementById('result').hidden = false;
 
+  showResult(url, expiresAt, { hasPassphrase: !!passphrase, burnAfterRead: burn });
+}
+
+function showResult(url, expiresAt, opts) {
+  document.getElementById('form-section').hidden = true;
+  document.getElementById('result-section').hidden = false;
+
+  const urlField = document.getElementById('result-url');
+  urlField.value = url;
+
+  const expiresDate = new Date(expiresAt * 1000);
+  const locale = currentLangCode === 'de' ? 'de-DE' : 'en-US';
+  document.getElementById('result-expires').textContent = expiresDate.toLocaleString(locale);
+
+  // Copy-Button
   document.getElementById('copy-btn').onclick = async () => {
-    await navigator.clipboard.writeText(url);
-    document.getElementById('copy-btn').textContent = strings['create.copied'] || 'OK';
+    try {
+      await navigator.clipboard.writeText(url);
+      toast(strings['create.copied'] || 'Kopiert!');
+    } catch {
+      urlField.select();
+      document.execCommand('copy');
+      toast(strings['create.copied'] || 'Kopiert!');
+    }
   };
+
+  // Mail-Button (mailto:)
+  const subject = strings['create.mailSubject'] || 'Sicheres Geheimnis für dich';
+  const expiresLine = (strings['create.mailExpires'] || 'Gültig bis: {when}\n')
+    .replace('{when}', expiresDate.toLocaleString(locale));
+  const burnLine = opts.burnAfterRead
+    ? (strings['create.mailBurn'] || 'Der Link funktioniert nur ein einziges Mal.\n')
+    : '';
+  const passLine = opts.hasPassphrase
+    ? (strings['create.mailPassphrase'] || 'Zum Öffnen brauchst du zusätzlich die Passphrase, die ich dir separat zukommen lasse.\n')
+    : '';
+  const bodyTpl = strings['create.mailBody'] ||
+    ('Hallo,\n\nÜber folgenden Link erreichst du das geteilte Geheimnis:\n\n{url}\n\n' +
+     '{expiresLine}{burnLine}{passphraseLine}\nDer Link wurde mit SharePassword (secret.bytexx.de) erzeugt.\n');
+  const body = bodyTpl
+    .replace('{url}', url)
+    .replace('{expiresLine}', expiresLine)
+    .replace('{burnLine}', burnLine)
+    .replace('{passphraseLine}', passLine);
+
+  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  document.getElementById('mail-btn').setAttribute('href', mailto);
+}
+
+function showError(msg) {
+  let el = document.getElementById('form-error');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'form-error';
+    el.className = 'error';
+    const form = document.getElementById('create-form');
+    form.insertBefore(el, form.firstChild);
+  }
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1600);
 }
