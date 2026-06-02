@@ -1,6 +1,6 @@
 {
   "create.title": "Geheimnis sicher teilen",
-  "create.lead": "Passwörter teilen, ohne sie irgendwo zu hinterlassen.\nWir verschlüsseln in Ihrem Browser, liefern einen einmaligen Link aus und löschen alles nach dem Abruf.\nDer Server sieht nie den Klartext.",
+  "create.lead": "Passwörter teilen, ohne sie irgendwo zu hinterlassen.\nWir verschlüsseln in Ihrem Browser, liefern einen einmaligen\nLink aus und löschen alles nach dem Abruf.\nDer Server sieht nie den Klartext.",
   "create.textareaLabel": "Inhalt",
   "create.placeholder": "Was möchten Sie teilen?",
   "create.fileLabel": "Dateien (optional, max. 25 MB gesamt)",

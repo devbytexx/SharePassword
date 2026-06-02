@@ -1,6 +1,6 @@
 {
   "create.title": "Share a secret securely",
-  "create.lead": "Share passwords without leaving them anywhere.\nWe encrypt in your browser, hand you a one-time link, and delete everything after retrieval.\nThe server never sees the plaintext.",
+  "create.lead": "Share passwords without leaving them anywhere.\nWe encrypt in your browser, hand you a one-time\nlink, and delete everything after retrieval.\nThe server never sees the plaintext.",
   "create.textareaLabel": "Content",
   "create.placeholder": "What do you want to share?",
   "create.fileLabel": "Files (optional, max 25 MB total)",
