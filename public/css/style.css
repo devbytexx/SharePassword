@@ -317,6 +317,16 @@ main.page--wide .card li { line-height: 1.55; }
   margin-bottom: 1.1rem;         /* Abstand zur nächsten Section übernimmt der Row */
 }
 .field-row > .field { margin-bottom: 0; }   /* inneres margin entfällt */
+.field-row input[type=text],
+.field-row input[type=email] {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.9rem;
+}
+.field-row .field__help {
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
   .field-row > .field { margin-bottom: 1.1rem; }
