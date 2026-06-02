@@ -14,6 +14,7 @@
 ## Wichtigste Verweise
 
 - **Design-Spec (Stand 2026-06-02):** [docs/superpowers/specs/2026-06-02-sharepassword-design.md](docs/superpowers/specs/2026-06-02-sharepassword-design.md)
+- **Implementierungs-Plan:** [docs/superpowers/plans/2026-06-02-sharepassword-implementation.md](docs/superpowers/plans/2026-06-02-sharepassword-implementation.md)
 - **Architektur:** [docs/architecture.md](docs/architecture.md)
 - **Installation (Disaster-Recovery):** [docs/installation.md](docs/installation.md)
 - **Konfiguration:** [docs/configuration.md](docs/configuration.md)
@@ -34,6 +35,25 @@
 ## Status
 
 - [x] Design-Spec geschrieben und freigegeben
-- [ ] Implementierungs-Plan
-- [ ] Implementierung
-- [ ] Deployment auf Passbolt-Server
+- [x] Implementierungs-Plan geschrieben
+- [x] Implementierung — Tasks 1–20 fertig, 19/19 nicht-DB-Tests grün, 9 DB-Tests warten auf `SP_TEST_DB=1` gegen lokale MariaDB
+- [ ] Lokale End-to-End-Verifikation mit MariaDB (`SP_TEST_DB=1 npm test` + manueller Browser-Test)
+- [ ] Deployment auf Passbolt-Server (Schritte in [docs/installation.md](docs/installation.md))
+- [ ] Hardening-Backlog abarbeiten (siehe TaskList in der Entwicklungs-Session)
+
+## Komponenten-Übersicht
+
+| Bereich         | Files                                                          |
+| --------------- | -------------------------------------------------------------- |
+| Backend         | `app.js`, `server.js`, `routes/secret.js`, `routes/pages.js`   |
+| Bibliotheken    | `lib/config.js`, `lib/db.js`, `lib/crypto-utils.js`, `lib/mailer.js` |
+| Frontend        | `public/index.html`, `public/s.html`, `public/js/{crypto,create,view,i18n}.js`, `public/css/style.css` |
+| Übersetzungen   | `i18n/de.json`, `i18n/en.json`                                 |
+| DB              | `sql/001-init.sql`, `sql/002-grants.sql.example`               |
+| Deployment      | `deploy/systemd/`, `deploy/nginx/`, `deploy/logrotate.d/`      |
+| Tests           | `tests/*.test.js` (28 Tests gesamt — 19 ohne DB, 9 brauchen `SP_TEST_DB=1`) |
+
+## Test-Befehle
+
+- Ohne DB: `npm test` (19 pass, 9 skip — Standardmodus, kein Setup nötig)
+- Mit DB: `SP_TEST_DB=1 npm test` (alle 28 Tests laufen — braucht MariaDB mit Schema `sharepassword_test` + User `sharepass_test/sharepass_test`)
