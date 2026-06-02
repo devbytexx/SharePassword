@@ -35,7 +35,11 @@
 | `GET /api/secret/:token`     | 30 / min / IP        |
 | Passphrase-Fehlversuche      | 5 / 15 min / Token   |
 
-Nach Überschreitung: HTTP 429, Token-Sperre 15 min bei Brute-Force.
+Nach Überschreitung: HTTP 429 mit `Retry-After`-Header, Token-Sperre 15 min bei Brute-Force.
+
+**Implementierung:** `@fastify/rate-limit` mit In-Memory-Store pro Prozess. Reicht für die geplante Single-Instance-Deployment. Bei Skalierung auf mehrere Instanzen muss auf Redis-Store gewechselt werden (`@fastify/rate-limit` unterstützt das nativ via `redis`-Option).
+
+**IP-Hash für `hashIp`:** verwendet HMAC-SHA-256 mit `IP_HASH_PEPPER` als Key (nicht plain SHA-256). Verhindert Length-Extension-Angriffe und Separator-Kollisionen.
 
 ## Logging
 
