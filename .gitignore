@@ -8,3 +8,8 @@ node_modules/
 .idea/
 coverage/
 dist/
+
+# Interne Doku — wird nicht ins Public-Repo geschoben
+docs/
+CLAUDE.md
+.claude/
