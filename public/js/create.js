@@ -45,7 +45,23 @@ let selectedFiles = [];   // Array von File-Objekten
   setupDropzone();
   setupTurnstile();
   setupSecurityHint();
+  setupHoneypot();
 })();
+
+function setupHoneypot() {
+  // Browser/Passwort-Manager schreiben gelegentlich trotz autocomplete=off
+  // in das versteckte Feld. Wir leeren es einmal kurz nach Laden — der
+  // tatsächliche Bot-Submit füllt es nach dieser Sekunde aus und fliegt
+  // damit korrekt raus, echte Nutzer haben das Feld nie gesehen.
+  const hp = document.getElementById('website');
+  if (!hp) return;
+  setTimeout(() => { hp.value = ''; }, 500);
+  // Plus: kurz vor dem Submit nochmal leeren wenn der Wert nach Autofill
+  // exakt einer typischen E-Mail entspricht (häufiges Autofill-Pattern).
+  document.getElementById('create-form').addEventListener('submit', () => {
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(hp.value)) hp.value = '';
+  }, true);   // capture-Phase: läuft vor unserem normalen submit-Handler
+}
 
 function setupSecurityHint() {
   // Blase ist immer sichtbar — markiere den Footer-Link als hervorgehoben.
@@ -174,8 +190,9 @@ function setupDropzone() {
 }
 
 async function handleSubmit() {
-  // Honeypot: echte Nutzer sehen das Feld nicht → muss leer sein
-  const hp = document.getElementById('hp_email');
+  // Honeypot: echte Nutzer sehen das Feld nicht → muss leer sein.
+  // ID="website" + Anti-Autofill-Attribute halten Passwort-Manager fern.
+  const hp = document.getElementById('website');
   const honeypotValue = hp && hp.value ? hp.value : '';
 
   const text = document.getElementById('plaintext').value;

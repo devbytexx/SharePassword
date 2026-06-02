@@ -61,10 +61,6 @@
           </label>
         </div>
 
-        <!-- Honeypot: für Bots, von echten Nutzern nie sichtbar -->
-        <div class="hp" aria-hidden="true">
-          <label>Bitte nicht ausfüllen: <input type="text" id="hp_email" name="hp_email" tabindex="-1" autocomplete="off"></label>
-        </div>
 
         <label class="field">
           <span data-i18n="create.expiresLabel">Ablauf</span>
@@ -108,6 +104,25 @@
 
         <!-- Cloudflare Turnstile — wird nur eingeblendet, wenn Site-Key in .env gesetzt -->
         <div id="turnstile-slot" class="turnstile-slot" hidden></div>
+
+        <!-- Honeypot — versteckt für Menschen, magnetisch für Bots.
+             name/id bewusst neutral ("website") + komplette Anti-Autofill-
+             Marker (LastPass, 1Password, Bitwarden), damit Passwort-
+             Manager das Feld nicht eigenmächtig befüllen. -->
+        <div class="hp" aria-hidden="true">
+          <label>
+            Webseite (bitte leer lassen):
+            <input type="text"
+                   id="website"
+                   name="website"
+                   value=""
+                   tabindex="-1"
+                   autocomplete="off"
+                   data-lpignore="true"
+                   data-1p-ignore
+                   data-bwignore>
+          </label>
+        </div>
 
         <button type="submit" class="btn btn--primary" data-i18n="create.submit">Link erzeugen</button>
       </form>
