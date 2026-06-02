@@ -53,6 +53,7 @@
   "footer.security": "Security",
   "footer.impressum": "Imprint",
   "footer.datenschutz": "Privacy",
+  "footer.github": "Source code",
   "footer.lang": "DE",
   "transparency.title": "How safe is this?",
   "transparency.e2e.title": "End-to-end encrypted:",

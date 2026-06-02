@@ -690,6 +690,27 @@ pre.plaintext {
 /* Tabelle horizontal scrollbar bei zu kleinem Viewport */
 .table-wrap { overflow-x: auto; }
 
+/* GitHub-Link (prominent, mit Icon) auf der Sicherheits-Seite */
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--brand-blue);
+  text-decoration: none;
+  font-weight: 700;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.9rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(36, 83, 152, 0.08);
+  border: 1px solid rgba(36, 83, 152, 0.22);
+  border-radius: var(--radius);
+  transition: background 0.15s, border-color 0.15s;
+}
+.github-link:hover {
+  background: rgba(36, 83, 152, 0.16);
+  border-color: var(--brand-blue);
+}
+
 /* ====== Tabellen (Sicherheits-Seite) ====== */
 .datatable {
   width: 100%;
