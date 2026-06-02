@@ -47,18 +47,8 @@ let turnstileSiteKey = null;
 })();
 
 function setupSecurityHint() {
-  const hint = document.getElementById('security-hint');
-  if (!hint) return;
-  if (localStorage.getItem('sp.hint.closed') === '1') {
-    hint.classList.add('is-hidden');
-    return;
-  }
+  // Blase ist immer sichtbar — markiere den Footer-Link als hervorgehoben.
   document.body.classList.add('security-hint-active');
-  hint.querySelector('.security-hint__close').addEventListener('click', () => {
-    hint.classList.add('is-hidden');
-    document.body.classList.remove('security-hint-active');
-    try { localStorage.setItem('sp.hint.closed', '1'); } catch (_) {}
-  });
 }
 
 async function setupTurnstile() {

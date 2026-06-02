@@ -40,9 +40,9 @@
   --bg-grad-from: #eef2f9;
   --bg-grad-to:   #f7f8fb;
   --card:      #ffffff;
-  --card-glass: rgba(255, 255, 255, 0.55);
+  --card-glass: rgba(255, 255, 255, 0.32);
   --border:    rgba(195, 205, 220, 0.6);
-  --border-glass: rgba(36, 83, 152, 0.28);
+  --border-glass: rgba(36, 83, 152, 0.32);
   --border-strong: #c8d0dc;
 
   /* Text */
@@ -73,7 +73,7 @@
     --bg-grad-from: #0f1623;
     --bg-grad-to:   #1a2236;
     --card:         #1a2236;
-    --card-glass:   rgba(26, 34, 54, 0.45);
+    --card-glass:   rgba(26, 34, 54, 0.28);
     --border:       rgba(60, 75, 100, 0.55);
     --border-glass: rgba(245, 132, 31, 0.32);
     --border-strong:#3a455c;
@@ -226,6 +226,7 @@ main.page {
   margin: 0 auto;
   padding: 2.5rem 1.25rem;
 }
+main.page--wide { max-width: 1080px; }   /* z.B. Sicherheits-Seite */
 .hero {
   text-align: center;
   margin-bottom: 1.75rem;
@@ -629,20 +630,6 @@ pre.plaintext {
 }
 .security-hint__icon { font-size: 1rem; line-height: 1; }
 .security-hint__text { color: #fff; }
-.security-hint__close {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.05rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0 0.1rem;
-  margin-left: 0.15rem;
-  opacity: 0.7;
-  order: 99;   /* close-Button ans Ende der flex-Reihe */
-}
-.security-hint__close:hover { opacity: 1; }
-.security-hint.is-hidden { display: none; }
 
 /* Highlight des Footer-Links, solange die Sprechblase aktiv ist */
 .security-hint-active .footer-security-link {
@@ -664,6 +651,24 @@ pre.plaintext {
 @media (prefers-reduced-motion: reduce) {
   .security-hint { animation: hint-pop 0.4s ease-out both; }
 }
+
+/* ====== 2-Spalten-Layout (Sicherheits-Seite) ====== */
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2.5rem;
+  margin: 1rem 0 1.5rem;
+}
+.cols-2__col h2:first-child { margin-top: 0; }
+.cols-2__col ol,
+.cols-2__col ul { padding-left: 1.2rem; }
+.cols-2__col li { margin-bottom: 0.35rem; }
+@media (max-width: 760px) {
+  .cols-2 { grid-template-columns: 1fr; gap: 0.5rem; }
+}
+
+/* Tabelle horizontal scrollbar bei zu kleinem Viewport */
+.table-wrap { overflow-x: auto; }
 
 /* ====== Tabellen (Sicherheits-Seite) ====== */
 .datatable {
