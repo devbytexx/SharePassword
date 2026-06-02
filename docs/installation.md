@@ -9,12 +9,15 @@ Schritt-für-Schritt auf einem Debian-Server mit nginx + MariaDB + certbot.
 - Node.js ≥ 20 installiert: `node -v`
 - SMTP-Zugang zu `mail.bytexx.de` bekannt
 
-## 1. Node.js (falls fehlt)
+## 1. Node.js und git (falls fehlt)
 
 ```bash
+# git ist auf minimalen Debian-Installationen NICHT vorbelegt — vor dem Clone installieren!
+sudo apt install -y git
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 node -v   # erwartet v20.x
+git --version
 ```
 
 ## 2. Linux-User + Verzeichnisse
@@ -23,12 +26,14 @@ node -v   # erwartet v20.x
 sudo useradd --system --home /opt/sharepassword --shell /usr/sbin/nologin sharepass
 sudo mkdir -p /opt/sharepassword /var/log/sharepassword
 sudo chown -R sharepass:sharepass /opt/sharepassword /var/log/sharepassword
+# WICHTIG: /opt/sharepassword/app NICHT von Hand anlegen — git clone macht das selbst.
+# Falls schon vorhanden und leer: `sudo rmdir /opt/sharepassword/app` davor.
 ```
 
 ## 3. Repo deployen
 
 ```bash
-sudo -u sharepass git clone <repo-url> /opt/sharepassword/app
+sudo -u sharepass git clone https://github.com/devbytexx/SharePassword.git /opt/sharepassword/app
 cd /opt/sharepassword/app
 sudo -u sharepass npm ci --omit=dev
 ```
