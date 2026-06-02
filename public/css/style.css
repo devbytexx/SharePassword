@@ -320,7 +320,7 @@ main.page--wide .card li { line-height: 1.55; }
 /* Inputs in der Row sind schmaler — nehmen nur den nötigen Platz ein */
 .field-row input[type=text],
 .field-row input[type=email] {
-  max-width: 14rem;
+  max-width: 16rem;
 }
 @media (max-width: 600px) {
   .field-row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
@@ -511,7 +511,8 @@ details.advanced[open] > summary::before { transform: rotate(90deg); }
 details.advanced[open] {
   padding-bottom: 0.5rem;
 }
-details.advanced > .field { margin-left: 0.95rem; margin-right: 0.95rem; }
+details.advanced > .field,
+details.advanced > .field-row { margin-left: 0.95rem; margin-right: 0.95rem; }
 details.advanced > .advanced__lead {
   margin: 0.25rem 0.95rem 1rem;
   font-size: 0.88rem;
