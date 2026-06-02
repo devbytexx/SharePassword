@@ -7,7 +7,41 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <main id="view-app"></main>
+  <header class="site-header">
+    <a href="/" class="brand">BYTEXX SharePassword</a>
+    <button id="lang-toggle" class="lang-toggle" data-i18n="footer.lang">EN</button>
+  </header>
+
+  <main class="page">
+    <h1 data-i18n="view.title">Geheimnis anzeigen</h1>
+    <p id="sender-hint" class="muted" hidden></p>
+
+    <section id="passphrase-section" hidden>
+      <p data-i18n="view.passphrasePrompt"></p>
+      <label class="field">
+        <span data-i18n="view.passphraseLabel">Passphrase</span>
+        <input type="password" id="passphrase" autocomplete="off">
+      </label>
+    </section>
+
+    <button id="show-btn" class="btn-primary" data-i18n="view.submit">Anzeigen</button>
+
+    <section id="result" hidden>
+      <pre id="plaintext"></pre>
+      <p id="file-section" hidden>
+        <a id="file-link" download data-i18n="view.fileDownload">Datei herunterladen</a>
+      </p>
+      <p class="muted" data-i18n="view.burnedNote"></p>
+    </section>
+
+    <p id="error" class="error" hidden></p>
+  </main>
+
+  <footer class="site-footer">
+    <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
+    <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
+  </footer>
+
   <script type="module" src="/js/view.js"></script>
 </body>
 </html>

@@ -7,7 +7,77 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <main id="create-app"></main>
+  <header class="site-header">
+    <a href="/" class="brand">BYTEXX SharePassword</a>
+    <button id="lang-toggle" class="lang-toggle" data-i18n="footer.lang">EN</button>
+  </header>
+
+  <main class="page">
+    <h1 data-i18n="create.title">Geheimnis sicher teilen</h1>
+    <p class="lead" data-i18n="create.lead"></p>
+
+    <form id="create-form">
+      <label class="field">
+        <textarea id="plaintext" rows="6" required
+                  data-i18n-placeholder="create.placeholder"></textarea>
+      </label>
+
+      <label class="field">
+        <span data-i18n="create.fileLabel">Datei</span>
+        <input type="file" id="file">
+      </label>
+
+      <label class="field">
+        <span data-i18n="create.expiresLabel">Ablauf</span>
+        <select id="expires">
+          <option value="3600"   data-i18n="create.expires.1h">1 Stunde</option>
+          <option value="86400"  data-i18n="create.expires.1d">1 Tag</option>
+          <option value="604800" data-i18n="create.expires.7d" selected>1 Woche</option>
+          <option value="2592000" data-i18n="create.expires.30d">30 Tage</option>
+        </select>
+      </label>
+
+      <label class="field checkbox">
+        <input type="checkbox" id="burn" checked>
+        <span data-i18n="create.burnLabel">Nach erstem Abruf löschen</span>
+      </label>
+
+      <details class="advanced">
+        <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
+        <label class="field">
+          <span data-i18n="create.passphraseLabel">Passphrase</span>
+          <input type="password" id="passphrase" autocomplete="new-password">
+        </label>
+        <label class="field">
+          <span data-i18n="create.notifyLabel">Benachrichtigungs-E-Mail</span>
+          <input type="email" id="notify-email">
+        </label>
+        <label class="field">
+          <span data-i18n="create.hintLabel">Hinweis für den Empfänger</span>
+          <input type="text" id="sender-hint" maxlength="120">
+        </label>
+      </details>
+
+      <button type="submit" class="btn-primary" data-i18n="create.submit">Link erzeugen</button>
+    </form>
+
+    <section id="result" hidden>
+      <h2 data-i18n="create.resultTitle">Fertig</h2>
+      <div class="result-link">
+        <input id="result-url" type="text" readonly>
+        <button id="copy-btn" type="button" data-i18n="create.copy">Kopieren</button>
+      </div>
+      <p class="muted">
+        <span data-i18n="create.expiresAt">Gültig bis</span>: <span id="result-expires"></span>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
+    <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
+  </footer>
+
   <script type="module" src="/js/create.js"></script>
 </body>
 </html>
