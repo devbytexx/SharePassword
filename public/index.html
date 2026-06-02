@@ -80,16 +80,18 @@
         <details class="advanced">
           <summary data-i18n="create.advancedToggle">Erweiterte Optionen</summary>
           <p class="advanced__lead" data-i18n="create.advancedLead"></p>
-          <label class="field">
-            <span data-i18n="create.senderNameLabel">Ihr Name (optional)</span>
-            <input type="text" id="sender-name" maxlength="80" autocomplete="name">
-            <small class="field__help" data-i18n="create.senderNameHelp"></small>
-          </label>
-          <label class="field">
-            <span data-i18n="create.recipientNameLabel">Empfänger Name (optional)</span>
-            <input type="text" id="recipient-name" maxlength="80" autocomplete="off">
-            <small class="field__help" data-i18n="create.recipientNameHelp"></small>
-          </label>
+          <div class="field-row">
+            <label class="field">
+              <span data-i18n="create.senderNameLabel">Ihr Name (optional)</span>
+              <input type="text" id="sender-name" maxlength="80" autocomplete="name">
+              <small class="field__help" data-i18n="create.senderNameHelp"></small>
+            </label>
+            <label class="field">
+              <span data-i18n="create.recipientNameLabel">Empfänger Name (optional)</span>
+              <input type="text" id="recipient-name" maxlength="80" autocomplete="off">
+              <small class="field__help" data-i18n="create.recipientNameHelp"></small>
+            </label>
+          </div>
           <label class="field">
             <span data-i18n="create.passphraseLabel">Passphrase (optional)</span>
             <input type="password" id="passphrase" autocomplete="new-password">
@@ -102,7 +104,7 @@
           </label>
           <label class="field">
             <span data-i18n="create.hintLabel">Hinweis für den Empfänger (sichtbar vor Entschlüsselung)</span>
-            <input type="text" id="sender-hint" maxlength="120">
+            <textarea id="sender-hint" maxlength="120" rows="3" class="hint-textarea"></textarea>
             <small class="field__help" data-i18n="create.hintHelp"></small>
           </label>
         </details>

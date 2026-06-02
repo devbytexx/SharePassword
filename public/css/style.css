@@ -307,6 +307,24 @@ main.page--wide .card li { line-height: 1.55; }
   gap: 0.6rem;
   margin-bottom: 1.1rem;
 }
+
+/* Felder nebeneinander (z.B. Ihr Name + Empfänger Name) */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+.field-row > .field { margin-bottom: 1.1rem; }
+@media (max-width: 600px) {
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* Hinweis-Textarea darf kompakter sein als der Plaintext-Bereich */
+textarea.hint-textarea {
+  min-height: 3.5rem;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+}
 .field.checkbox > span {
   margin: 0;
   font-weight: 400;
