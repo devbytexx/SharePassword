@@ -247,6 +247,7 @@ main.page--wide .card li { line-height: 1.55; }
   color: var(--fg-muted);
   font-size: 1.05rem;
   margin: 0;
+  white-space: pre-line;   /* \n im i18n-String wird zu Zeilenumbruch */
 }
 
 /* ====== Card — Glassmorphism (sehr transparent, fast schwebend) ====== */
