@@ -86,7 +86,7 @@ tests/
   "engines": { "node": ">=20" },
   "scripts": {
     "start": "node server.js",
-    "test": "node --test --test-reporter=spec tests/"
+    "test": "node --test --test-reporter=spec"
   },
   "dependencies": {
     "@fastify/rate-limit": "^9.1.0",
