@@ -104,6 +104,15 @@
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+
+/* ====== Globale Link-Farbe — BYTEXX Orange ====== */
+a {
+  color: var(--brand-orange);
+  text-decoration: none;
+  transition: color 0.12s;
+}
+a:hover { color: var(--brand-orange-dark); text-decoration: underline; }
+a:visited { color: var(--brand-orange); }
 body {
   margin: 0;
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -163,6 +172,7 @@ body {
   text-decoration: none;
   color: var(--fg);
 }
+.brand:hover { color: var(--fg); text-decoration: none; }
 .brand__logo {
   /* Logo zeigt nur den oberen Teil (Buchstaben), Reflexion wird abgeschnitten */
   height: 36px;
@@ -508,6 +518,7 @@ details.advanced > .advanced__lead {
 }
 .btn:active { transform: translateY(1px); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn:hover { text-decoration: none; }   /* Buttons unterstreichen nicht im Hover */
 
 .btn--primary {
   background: var(--brand-orange);
@@ -733,7 +744,7 @@ pre.plaintext {
 
 /* Highlight des Footer-Links, solange die Sprechblase aktiv ist */
 .security-hint-active .footer-security-link {
-  color: var(--brand-blue);
+  color: var(--brand-orange);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -783,20 +794,22 @@ pre.plaintext {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--brand-blue);
+  color: var(--brand-orange);
   text-decoration: none;
   font-weight: 700;
   font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
   font-size: 0.9rem;
   padding: 0.3rem 0.7rem;
-  background: rgba(36, 83, 152, 0.08);
-  border: 1px solid rgba(36, 83, 152, 0.22);
+  background: rgba(245, 132, 31, 0.08);
+  border: 1px solid rgba(245, 132, 31, 0.28);
   border-radius: var(--radius);
   transition: background 0.15s, border-color 0.15s;
 }
 .github-link:hover {
-  background: rgba(36, 83, 152, 0.16);
-  border-color: var(--brand-blue);
+  background: rgba(245, 132, 31, 0.16);
+  border-color: var(--brand-orange);
+  text-decoration: none;
+  color: var(--brand-orange);
 }
 
 /* ====== Tabellen (Sicherheits-Seite) ====== */
@@ -835,11 +848,12 @@ pre.plaintext {
   flex-wrap: wrap;
   gap: 1.5rem;
 }
+/* Footer-Links bewusst gedämpfter — Orange wäre dort zu laut */
 .site-footer a {
   color: var(--fg-muted);
   text-decoration: none;
 }
-.site-footer a:hover { color: var(--brand-blue); }
+.site-footer a:hover { color: var(--brand-orange); text-decoration: underline; }
 
 /* ====== Toast ====== */
 .toast {
