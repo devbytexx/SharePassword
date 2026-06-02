@@ -202,6 +202,7 @@ async function handleSubmit() {
   const notifyEmail = document.getElementById('notify-email').value.trim() || null;
   const senderHint = document.getElementById('sender-hint').value.trim() || null;
   const senderName = document.getElementById('sender-name').value.trim() || null;
+  const recipientName = document.getElementById('recipient-name').value.trim() || null;
 
   if (!text && selectedFiles.length === 0) {
     showError(strings['create.error.empty'] || 'Bitte Text oder Datei angeben.');
@@ -275,7 +276,8 @@ async function handleSubmit() {
     hasPassphrase: !!passphrase,
     burnAfterRead: burn,
     senderHint,
-    senderName
+    senderName,
+    recipientName
   });
 }
 
@@ -304,24 +306,32 @@ function showResult(url, expiresAt, opts) {
 
   // Mail-Button (mailto:)
   const subject = strings['create.mailSubject'] || 'Sicheres Geheimnis von secret.bytexx.de';
-  const expiresLine = (strings['create.mailExpires'] || 'Gültig bis: {when}\n')
-    .replace('{when}', expiresDate.toLocaleString(locale));
+
+  // Anrede: persönlich wenn Empfänger-Name angegeben
+  const greeting = opts.recipientName
+    ? (strings['create.mailGreetingWithName'] || 'Hallo {name},').replace('{name}', opts.recipientName)
+    : (strings['create.mailGreeting'] || 'Hallo,');
+
+  // Datum hervorgehoben mit ▶ ◀ Markern
+  const whenStr = expiresDate.toLocaleString(locale);
+  const expiresLine = (strings['create.mailExpires'] || '⏱️  GÜLTIG BIS:  ▶  {when}  ◀\n')
+    .replace('{when}', whenStr);
+
   const burnLine = opts.burnAfterRead
-    ? (strings['create.mailBurn'] || 'Der Link funktioniert nur ein einziges Mal.\n')
+    ? (strings['create.mailBurn'] || '🔥 Der Link funktioniert nur ein einziges Mal — wer ihn nach Ihnen öffnet, sieht nichts mehr.\n')
     : '';
   const passLine = opts.hasPassphrase
-    ? (strings['create.mailPassphrase'] || 'Zum Öffnen benötigen Sie zusätzlich die Passphrase, die ich Ihnen separat zukomme lasse.\n')
+    ? (strings['create.mailPassphrase'] || '🔑 Zum Öffnen benötigen Sie zusätzlich die Passphrase, die ich Ihnen über einen separaten Kanal zukommen lasse.\n')
     : '';
+  // Hint als hervorgehobener Block (mehrzeilig)
   const hintLine = opts.senderHint
-    ? (strings['create.mailHint'] || '💡 Hinweis: {hint}\n').replace('{hint}', opts.senderHint)
+    ? (strings['create.mailHint'] || '\n  ┃ 💡 Hinweis vom Absender:\n  ┃ {hint}\n  ┃\n').replace('{hint}', opts.senderHint)
     : '';
   const senderSig = opts.senderName ? (opts.senderName + '\n') : '';
 
-  const bodyTpl = strings['create.mailBody'] ||
-    ('Hallo,\n\nich habe ein verschlüsseltes Geheimnis für Sie hinterlegt.\n' +
-     '{hintLine}\n🔗 {url}\n\n{expiresLine}{burnLine}{passphraseLine}\n' +
-     'Viele Grüße\n{senderSignature}\n');
+  const bodyTpl = strings['create.mailBody'] || '';
   const body = bodyTpl
+    .replace('{greeting}', greeting)
     .replace('{url}', url)
     .replace('{hintLine}', hintLine)
     .replace('{expiresLine}', expiresLine)
