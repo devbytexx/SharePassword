@@ -43,7 +43,23 @@ let turnstileSiteKey = null;
 
   setupDropzone();
   setupTurnstile();
+  setupSecurityHint();
 })();
+
+function setupSecurityHint() {
+  const hint = document.getElementById('security-hint');
+  if (!hint) return;
+  if (localStorage.getItem('sp.hint.closed') === '1') {
+    hint.classList.add('is-hidden');
+    return;
+  }
+  document.body.classList.add('security-hint-active');
+  hint.querySelector('.security-hint__close').addEventListener('click', () => {
+    hint.classList.add('is-hidden');
+    document.body.classList.remove('security-hint-active');
+    try { localStorage.setItem('sp.hint.closed', '1'); } catch (_) {}
+  });
+}
 
 async function setupTurnstile() {
   try {

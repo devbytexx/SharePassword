@@ -48,6 +48,8 @@
   "view.error.locked": "Too many failed attempts. Try again later.",
   "view.error.wrongPassphrase": "Wrong passphrase or corrupted data.",
   "view.error.network": "Network error.",
+  "securityHint.text": "How safe is this?",
+  "securityHint.link": "Learn more",
   "footer.security": "Security",
   "footer.impressum": "Imprint",
   "footer.datenschutz": "Privacy",

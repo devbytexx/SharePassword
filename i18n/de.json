@@ -48,6 +48,8 @@
   "view.error.locked": "Zu viele Fehlversuche. Bitte später erneut versuchen.",
   "view.error.wrongPassphrase": "Falsche Passphrase oder beschädigte Daten.",
   "view.error.network": "Netzwerkfehler.",
+  "securityHint.text": "Wie sicher ist das?",
+  "securityHint.link": "Erfahren Sie mehr",
   "footer.security": "Sicherheit",
   "footer.impressum": "Impressum",
   "footer.datenschutz": "Datenschutz",
