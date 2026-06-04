@@ -118,15 +118,12 @@ body {
   font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
   line-height: 1.55;
-  /* Mehrschichtiger Verlauf:
-     - radial-gradient oben-links: zarter Blau-Glow (BYTEXX)
-     - radial-gradient unten-rechts: zarter Orange-Glow (BYTEXX)
-     - linear-gradient: Grundton von hell oben nach dunkler unten */
-  background:
-    radial-gradient(circle at 18% 12%, rgba(36, 83, 152, 0.22), transparent 55%),
-    radial-gradient(circle at 88% 92%, rgba(245, 132, 31, 0.12), transparent 50%),
-    linear-gradient(180deg, var(--bg-grad-from) 0%, var(--bg-grad-to) 100%);
-  background-attachment: fixed;
+  /* Solide Basisfarbe — deckt das gesamte Dokument bei JEDEM Zoom ab.
+     Der eigentliche Verlauf (Glow + Grundton) liegt auf #hex-canvas, weil
+     dessen fixe 100vw/100vh-Box mit dem Zoom-Viewport mitwächst. Auf dem
+     body mit `background-attachment: fixed` deckte der Verlauf beim
+     Rauszoomen nur ein viewport-großes Rechteck ab → harte Kante. */
+  background: var(--bg-grad-to);
   color: var(--fg);
   min-height: 100vh;
   display: flex;
@@ -134,7 +131,12 @@ body {
   position: relative;
 }
 
-/* Hexagon-Animation als statischer Hintergrund hinter allem */
+/* Hexagon-Animation als statischer Hintergrund hinter allem.
+   Trägt zusätzlich den Verlauf (Glow + Grundton): Die fixe 100vw/100vh-Box
+   wächst mit dem Zoom-Viewport mit, deshalb deckt der Verlauf hier IMMER die
+   ganze sichtbare Fläche ab — anders als auf dem body mit fixed-attachment.
+   Der Canvas wird per clearRect transparent gehalten, der CSS-Hintergrund
+   scheint zwischen den Hexagon-Linien durch. */
 #hex-canvas {
   position: fixed;
   top: 0; left: 0;
@@ -142,6 +144,10 @@ body {
   height: 100vh;
   z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(36, 83, 152, 0.22), transparent 55%),
+    radial-gradient(circle at 88% 92%, rgba(245, 132, 31, 0.12), transparent 50%),
+    linear-gradient(180deg, var(--bg-grad-from) 0%, var(--bg-grad-to) 100%);
 }
 .site-header, main.page, .site-footer { position: relative; z-index: 1; }
 
