@@ -224,6 +224,7 @@ function downloadZip(decoded, btn) {
       setTimeout(() => URL.revokeObjectURL(url), 4000);
     } catch (err) {
       console.error(err);
+      showError(strings['view.error.zipFailed'] || 'ZIP konnte nicht erstellt werden. Bitte Dateien einzeln herunterladen.');
     } finally {
       btn.disabled = false;
       btn.textContent = original;

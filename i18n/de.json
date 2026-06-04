@@ -67,6 +67,7 @@
   "view.fileDownloadAllZip": "Alle als ZIP herunterladen",
   "view.zipBuilding": "ZIP wird erzeugt …",
   "view.zipName": "dateien.zip",
+  "view.error.zipFailed": "ZIP konnte nicht erstellt werden. Bitte Dateien einzeln herunterladen.",
   "view.filesTitle": "Angehängte Dateien",
   "view.error.notFound": "Geheimnis nicht gefunden oder abgelaufen.",
   "view.error.locked": "Zu viele Fehlversuche. Bitte später erneut versuchen.",

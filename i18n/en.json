@@ -67,6 +67,7 @@
   "view.fileDownloadAllZip": "Download all as ZIP",
   "view.zipBuilding": "Building ZIP …",
   "view.zipName": "files.zip",
+  "view.error.zipFailed": "Could not create the ZIP. Please download the files individually.",
   "view.filesTitle": "Attached files",
   "view.error.notFound": "Secret not found or expired.",
   "view.error.locked": "Too many failed attempts. Try again later.",
