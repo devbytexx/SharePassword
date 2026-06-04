@@ -15,7 +15,7 @@ const createSchema = {
     additionalProperties: false,
     properties: {
       ciphertext:     { type: 'string', minLength: 1, maxLength: 48 * 1024 * 1024 },
-      expiresIn:      { type: 'integer', enum: [3600, 86400, 604800, 2592000] },
+      expiresIn:      { type: 'integer', enum: [3600, 10800, 43200, 86400, 604800, 1209600] },
       burnAfterRead:  { type: 'boolean' },
       hasPassphrase:  { type: 'boolean' },
       passphraseSalt: { type: ['string', 'null'] },
