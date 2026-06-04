@@ -16,6 +16,7 @@ let keyMaterial = null;
   const lang = currentLang();
   strings = await loadStrings(lang);
   apply(strings);
+  document.body.classList.add('security-hint-active');   // Footer-Sprechblase
 
   document.getElementById('lang-toggle').addEventListener('click', () => {
     setLang(lang === 'de' ? 'en' : 'de');

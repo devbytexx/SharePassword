@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SharePassword – Geheimnis anzeigen</title>
+  <title>SharePassword – Secret anzeigen</title>
   <script src="/js/theme-init.js"></script>
   <link rel="stylesheet" href="/css/style.css?v=20260604-8">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
@@ -25,7 +25,7 @@
 
   <main class="page">
     <section class="hero">
-      <h1 data-i18n="view.title">Geheimnis anzeigen</h1>
+      <h1 data-i18n="view.title">Secret anzeigen</h1>
     </section>
 
     <section class="card">
@@ -54,13 +54,20 @@
     </section>
 
     <div class="view-promo">
-      <a href="/" class="btn btn--ghost-orange view-promo__btn" data-i18n="view.promo">Nutzen Sie auch unseren Dienst zum einfachen, sicheren Versenden von Geheimnissen</a>
+      <a href="/" class="btn btn--ghost-orange view-promo__btn" data-i18n="view.promo">Nutzen Sie auch unseren Dienst zum einfachen, sicheren Versenden von Secrets</a>
       <p class="view-promo__hint" data-i18n="view.bookmarkHint">Tipp: mit Strg+D als Lesezeichen speichern (⌘+D am Mac).</p>
     </div>
   </main>
 
   <footer class="site-footer">
-    <a href="/sicherheit.html" data-i18n="footer.security">Sicherheit</a>
+    <span class="footer-security-wrap">
+      <a href="/sicherheit.html" class="footer-security-link" data-i18n="footer.security">Sicherheit</a>
+      <!-- Sprechblase sitzt direkt über dem "Sicherheit"-Link, Pfeil zeigt drauf -->
+      <span id="security-hint" class="security-hint" role="note">
+        <span class="security-hint__icon" aria-hidden="true">🔒</span>
+        <span class="security-hint__text" data-i18n="securityHint.text">Wie sicher ist das?</span>
+      </span>
+    </span>
     <a href="/impressum.html" data-i18n="footer.impressum">Impressum</a>
     <a href="/datenschutz.html" data-i18n="footer.datenschutz">Datenschutz</a>
     <a href="https://github.com/devbytexx/SharePassword" target="_blank" rel="noopener" data-i18n="footer.github">Quellcode</a>
@@ -76,7 +83,7 @@
     <div id="preview-modal-body" class="preview-modal__body"></div>
   </dialog>
 
-  <script type="module" src="/js/view.js?v=20260604-6"></script>
+  <script type="module" src="/js/view.js?v=20260604-9"></script>
   <script type="module" src="/js/hexagon.js?v=20260604-4"></script>
 </body>
 </html>
