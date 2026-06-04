@@ -17,7 +17,7 @@ function readThemeColors() {
   return {
     line: dark ? '#F5841F' : '#245398',
     shadow: dark ? 'rgba(245,132,31,0.18)' : 'rgba(36,83,152,0.12)',
-    alpha: dark ? 0.10 : 0.12
+    alpha: dark ? 0.18 : 0.22
   };
 }
 
@@ -111,7 +111,7 @@ function loop() {
   ctx.lineWidth = HEX_LINE_WIDTH;
   ctx.strokeStyle = colors.line;
   ctx.shadowColor = colors.shadow;
-  ctx.shadowBlur = 3;
+  ctx.shadowBlur = 6;
   ctx.stroke();
 }
 
