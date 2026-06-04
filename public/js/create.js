@@ -301,6 +301,9 @@ async function handleSubmit() {
   try {
     const data = await postSecretWithProgress(body, setUploadFill);
     setUploadFill(1);
+    if (!data || !data.token) {
+      throw new Error(strings['create.error.badResponse'] || 'Ungültige Server-Antwort.');
+    }
     ({ token, expiresAt } = data);
   } catch (e) {
     const status = e && e.status;
@@ -314,7 +317,8 @@ async function handleSubmit() {
     if (status === 400 && errCode === 'honeypot') {
       throw new Error(strings['create.error.honeypot'] || 'Anfrage abgelehnt.');
     }
-    throw new Error(`Fehler ${status || ''}`.trim());
+    if (status) throw new Error(`Fehler ${status}`);
+    throw new Error(strings['create.error.network'] || 'Netzwerkfehler. Bitte erneut versuchen.');
   }
   const url = `${location.origin}/s/${token}#${bytesToBase64Url(keyForUrl)}`;
 
@@ -446,6 +450,7 @@ function postSecretWithProgress(body, onProgress) {
       else reject({ status: xhr.status, json });
     });
     xhr.addEventListener('error', () => reject({ status: 0, json: null }));
+    xhr.addEventListener('abort', () => reject({ status: 0, json: null }));
     xhr.send(JSON.stringify(body));
   });
 }

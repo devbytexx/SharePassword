@@ -54,6 +54,8 @@
   "create.error.empty": "Bitte Text oder Datei angeben.",
   "create.error.fileTooLarge": "Datei zu groß (max. 5 MB).",
   "create.error.rateLimit": "Zu viele Anfragen. Bitte gleich nochmal versuchen.",
+  "create.error.network": "Netzwerkfehler. Bitte erneut versuchen.",
+  "create.error.badResponse": "Ungültige Server-Antwort. Bitte erneut versuchen.",
   "view.title": "Geheimnis anzeigen",
   "view.passphrasePrompt": "Dieses Geheimnis ist mit einer Passphrase geschützt.",
   "view.passphraseLabel": "Passphrase",

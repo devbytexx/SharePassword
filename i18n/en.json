@@ -54,6 +54,8 @@
   "create.error.empty": "Please enter text or attach a file.",
   "create.error.fileTooLarge": "File too large (max 5 MB).",
   "create.error.rateLimit": "Too many requests. Please try again in a moment.",
+  "create.error.network": "Network error. Please try again.",
+  "create.error.badResponse": "Invalid server response. Please try again.",
   "view.title": "View secret",
   "view.passphrasePrompt": "This secret is protected by a passphrase.",
   "view.passphraseLabel": "Passphrase",
