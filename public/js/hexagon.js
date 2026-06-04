@@ -97,7 +97,14 @@ function loop() {
   rafId = requestAnimationFrame(loop);
   const colors = readThemeColors();
 
+  // Vollständig leeren — Transform kurz zurücksetzen. Der Kontext ist per dpr
+  // skaliert; bei devicePixelRatio < 1 (Rauszoomen) würde clearRect mit den
+  // Geräte-Pixel-Maßen canvas.width/height nur einen Bruchteil löschen, der
+  // Rest akkumuliert Striche und wird zur „lauten" Fläche.
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
   ctx.globalAlpha = colors.alpha;
   ctx.beginPath();
   for (const hex of hexagons) drawHexagonPath(hex);
