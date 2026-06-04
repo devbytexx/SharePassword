@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sicherheit – SharePassword</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260603-8">
+  <link rel="stylesheet" href="/css/style.css?v=20260604-2">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -59,6 +59,7 @@
             <li>Der Empfänger öffnet die URL. Der Browser holt den Cipher-Block vom Server.</li>
             <li>Der Schlüssel aus dem URL-Fragment entschlüsselt den Cipher-Block <strong>lokal im Browser</strong> — der Klartext erscheint.</li>
             <li>Ist „Nach erstem Abruf löschen" aktiv, meldet der Browser dem Server: gelesen. Der Eintrag wird sofort aus der Datenbank entfernt.</li>
+            <li>Angehängte Dateien können <strong>vor dem Download im Browser als Vorschau</strong> angezeigt (Bilder, PDFs, Textdateien) und einzeln oder gesammelt als <strong>ZIP heruntergeladen</strong> werden. Auch Vorschau und ZIP-Erstellung passieren <strong>vollständig lokal</strong> — der Server sieht die entschlüsselten Dateien nie.</li>
           </ol>
 
           <h2>Was Sie selbst tun können</h2>
@@ -111,6 +112,6 @@
   </footer>
 
   <script type="module" src="/js/static-page-init.js"></script>
-  <script type="module" src="/js/hexagon.js"></script>
+  <script type="module" src="/js/hexagon.js?v=20260604-3"></script>
 </body>
 </html>
