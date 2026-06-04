@@ -32,6 +32,7 @@ let selectedFiles = [];   // Array von File-Objekten
       await handleSubmit();
     } catch (err) {
       console.error(err);
+      hideUploadProgress();
       showError(err.message || String(err));
     } finally {
       btn.disabled = false;
@@ -256,6 +257,7 @@ async function handleSubmit() {
     showError(strings['create.error.fileTooLarge'] || 'Dateien zu groß (max. 25 MB gesamt).');
     return;
   }
+  showUploadProgress(strings['create.uploadPhaseEncrypt'] || 'Verschlüssele …', true);
   const filesPayload = [];
   for (const f of selectedFiles) {
     const buf = new Uint8Array(await f.arrayBuffer());
@@ -292,27 +294,35 @@ async function handleSubmit() {
     turnstileToken: getTurnstileToken()
   };
 
-  const res = await fetch('/api/secret', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    if (res.status === 429) {
-      const err = await res.json().catch(() => ({}));
-      if (err.error === 'daily_limit') {
+  showUploadProgress(strings['create.uploadPhaseUpload'] || 'Lade hoch …', false);
+  setUploadFill(0);
+
+  let token, expiresAt;
+  try {
+    const data = await postSecretWithProgress(body, setUploadFill);
+    setUploadFill(1);
+    if (!data || !data.token) {
+      throw new Error(strings['create.error.badResponse'] || 'Ungültige Server-Antwort.');
+    }
+    ({ token, expiresAt } = data);
+  } catch (e) {
+    const status = e && e.status;
+    const errCode = e && e.json && e.json.error;
+    if (status === 429) {
+      if (errCode === 'daily_limit') {
         throw new Error(strings['create.error.dailyLimit'] || 'Tageslimit erreicht.');
       }
       throw new Error(strings['create.error.rateLimit'] || 'Rate-Limit erreicht. Bitte später erneut.');
     }
-    if (res.status === 400) {
-      const err = await res.json().catch(() => ({}));
-      if (err.error === 'honeypot') throw new Error(strings['create.error.honeypot'] || 'Anfrage abgelehnt.');
+    if (status === 400 && errCode === 'honeypot') {
+      throw new Error(strings['create.error.honeypot'] || 'Anfrage abgelehnt.');
     }
-    throw new Error(`Fehler ${res.status}`);
+    if (status) throw new Error(`Fehler ${status}`);
+    throw new Error(strings['create.error.network'] || 'Netzwerkfehler. Bitte erneut versuchen.');
   }
-  const { token, expiresAt } = await res.json();
   const url = `${location.origin}/s/${token}#${bytesToBase64Url(keyForUrl)}`;
 
+  hideUploadProgress();
   showResult(url, expiresAt, {
     hasPassphrase: !!passphrase,
     burnAfterRead: burn,
@@ -402,4 +412,45 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 1600);
+}
+
+function showUploadProgress(phaseText, indeterminate) {
+  const box = document.getElementById('upload-progress');
+  const bar = box.querySelector('.upload-progress__bar');
+  const fill = document.getElementById('upload-progress-fill');
+  document.getElementById('upload-progress-phase').textContent = phaseText;
+  bar.classList.toggle('is-indeterminate', !!indeterminate);
+  if (indeterminate) fill.style.width = '';
+  box.hidden = false;
+}
+
+function setUploadFill(ratio) {
+  document.getElementById('upload-progress-fill').style.width =
+    Math.round(ratio * 100) + '%';
+}
+
+function hideUploadProgress() {
+  document.getElementById('upload-progress').hidden = true;
+}
+
+// POST /api/secret via XHR, damit echter Upload-Fortschritt verfügbar ist.
+// Resolve: geparstes JSON ({ token, expiresAt }). Reject: { status, json }.
+function postSecretWithProgress(body, onProgress) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/secret');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) onProgress(e.loaded / e.total);
+    });
+    xhr.addEventListener('load', () => {
+      let json = null;
+      try { json = JSON.parse(xhr.responseText); } catch (_) { /* leer/kein JSON */ }
+      if (xhr.status >= 200 && xhr.status < 300) resolve(json);
+      else reject({ status: xhr.status, json });
+    });
+    xhr.addEventListener('error', () => reject({ status: 0, json: null }));
+    xhr.addEventListener('abort', () => reject({ status: 0, json: null }));
+    xhr.send(JSON.stringify(body));
+  });
 }

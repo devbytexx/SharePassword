@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SharePassword – BYTEXX</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260603-8">
+  <link rel="stylesheet" href="/css/style.css?v=20260604-2">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -140,6 +140,15 @@
           </label>
         </div>
 
+        <!-- Upload-Fortschritt — beim Absenden eingeblendet -->
+        <div id="upload-progress" class="upload-progress" hidden aria-live="polite">
+          <div class="upload-progress__bar">
+            <div id="upload-progress-fill" class="upload-progress__fill"></div>
+          </div>
+          <p id="upload-progress-phase" class="upload-progress__phase"></p>
+          <p class="upload-progress__hint" data-i18n="create.uploadWaitHint"></p>
+        </div>
+
         <button type="submit" class="btn btn--primary" data-i18n="create.submit">Link erzeugen</button>
       </form>
     </section>
@@ -182,7 +191,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="/js/create.js"></script>
-  <script type="module" src="/js/hexagon.js"></script>
+  <script type="module" src="/js/create.js?v=20260604-1"></script>
+  <script type="module" src="/js/hexagon.js?v=20260604-3"></script>
 </body>
 </html>

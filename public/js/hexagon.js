@@ -17,7 +17,7 @@ function readThemeColors() {
   return {
     line: dark ? '#F5841F' : '#245398',
     shadow: dark ? 'rgba(245,132,31,0.18)' : 'rgba(36,83,152,0.12)',
-    alpha: dark ? 0.18 : 0.22
+    alpha: dark ? 0.10 : 0.12
   };
 }
 
@@ -97,14 +97,21 @@ function loop() {
   rafId = requestAnimationFrame(loop);
   const colors = readThemeColors();
 
+  // Vollständig leeren — Transform kurz zurücksetzen. Der Kontext ist per dpr
+  // skaliert; bei devicePixelRatio < 1 (Rauszoomen) würde clearRect mit den
+  // Geräte-Pixel-Maßen canvas.width/height nur einen Bruchteil löschen, der
+  // Rest akkumuliert Striche und wird zur „lauten" Fläche.
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
   ctx.globalAlpha = colors.alpha;
   ctx.beginPath();
   for (const hex of hexagons) drawHexagonPath(hex);
   ctx.lineWidth = HEX_LINE_WIDTH;
   ctx.strokeStyle = colors.line;
   ctx.shadowColor = colors.shadow;
-  ctx.shadowBlur = 6;
+  ctx.shadowBlur = 3;
   ctx.stroke();
 }
 

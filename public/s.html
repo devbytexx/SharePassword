@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SharePassword – Geheimnis anzeigen</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260603-8">
+  <link rel="stylesheet" href="/css/style.css?v=20260604-2">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -62,7 +62,16 @@
     <span class="brand__title">© BYTEXX IT</span>
   </footer>
 
-  <script type="module" src="/js/view.js"></script>
-  <script type="module" src="/js/hexagon.js"></script>
+  <dialog id="preview-modal" class="preview-modal">
+    <div class="preview-modal__head">
+      <span id="preview-modal-name" class="preview-modal__name"></span>
+      <button id="preview-modal-close" type="button" class="btn btn--ghost preview-modal__close"
+              data-i18n="view.previewClose">Schließen</button>
+    </div>
+    <div id="preview-modal-body" class="preview-modal__body"></div>
+  </dialog>
+
+  <script type="module" src="/js/view.js?v=20260604-1"></script>
+  <script type="module" src="/js/hexagon.js?v=20260604-3"></script>
 </body>
 </html>
