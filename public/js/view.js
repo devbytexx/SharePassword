@@ -5,6 +5,8 @@ import {
   decryptBytes, deriveKekFromPassphrase, unwrapKey,
   base64UrlToBytes, base64ToBytes
 } from '/js/crypto.js';
+import { classifyPreview } from '/js/preview-util.js';
+import { buildZipBlob } from '/js/zip-util.js';
 
 let strings = {};
 let meta = null;
@@ -45,6 +47,16 @@ let keyMaterial = null;
   }
 
   document.getElementById('show-btn').addEventListener('click', () => onShow(token));
+
+  const modal = document.getElementById('preview-modal');
+  if (modal) {
+    document.getElementById('preview-modal-close')
+      .addEventListener('click', () => modal.close());
+    // Body beim Schließen leeren (stoppt z. B. PDF-Rendering im iframe)
+    modal.addEventListener('close', () => {
+      document.getElementById('preview-modal-body').innerHTML = '';
+    });
+  }
 })();
 
 async function onShow(token) {
@@ -97,42 +109,124 @@ function render(json) {
   if (files.length > 0) {
     const list = document.getElementById('files-list');
     list.innerHTML = '';
-    for (const f of files) {
-      const bytes = base64ToBytes(f.data);
-      const blob = new Blob([bytes], { type: f.type || 'application/octet-stream' });
-      const url = URL.createObjectURL(blob);
+    const section = document.getElementById('files-section');
 
+    // Alle Anhänge einmal dekodieren — bytes für Vorschau/ZIP, url für Download.
+    const decoded = files.map((f) => {
+      const bytes = base64ToBytes(f.data);
+      const type = f.type || 'application/octet-stream';
+      const url = URL.createObjectURL(new Blob([bytes], { type }));
+      return { name: f.name || 'datei', type, bytes, url };
+    });
+
+    // "Alle als ZIP herunterladen" — nur ab 2 Dateien.
+    const existingZip = document.getElementById('files-zip-btn');
+    if (existingZip) existingZip.remove();
+    if (decoded.length >= 2) {
+      const zipBtn = document.createElement('button');
+      zipBtn.id = 'files-zip-btn';
+      zipBtn.type = 'button';
+      zipBtn.className = 'btn btn--secondary files-zip';
+      zipBtn.textContent = strings['view.fileDownloadAllZip'] || 'Alle als ZIP herunterladen';
+      zipBtn.addEventListener('click', () => downloadZip(decoded, zipBtn));
+      section.insertBefore(zipBtn, list);
+    }
+
+    for (const d of decoded) {
       const li = document.createElement('li');
 
       const icon = document.createElement('span');
       icon.className = 'file-icon';
       icon.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
 
-      const meta = document.createElement('div');
-      meta.className = 'file-meta';
+      const metaEl = document.createElement('div');
+      metaEl.className = 'file-meta';
       const name = document.createElement('div');
       name.className = 'file-name';
-      name.textContent = f.name || 'datei';
+      name.textContent = d.name;
       const size = document.createElement('div');
       size.className = 'file-size';
-      size.textContent = formatSize(bytes.length);
-      meta.append(name, size);
+      size.textContent = formatSize(d.bytes.length);
+      metaEl.append(name, size);
+
+      const actions = document.createElement('div');
+      actions.className = 'file-actions';
+
+      const kind = classifyPreview(d.type, d.name);
+      if (kind) {
+        const pv = document.createElement('button');
+        pv.type = 'button';
+        pv.className = 'btn btn--ghost file-preview';
+        pv.textContent = strings['view.filePreview'] || 'Vorschau';
+        pv.addEventListener('click', () => openPreview(d, kind));
+        actions.appendChild(pv);
+      }
 
       const dl = document.createElement('a');
-      dl.href = url;
-      dl.download = f.name || 'download';
+      dl.href = d.url;
+      dl.download = d.name;
       dl.className = 'btn btn--secondary file-dl';
       dl.textContent = strings['view.fileDownload'] || 'Herunterladen';
+      actions.appendChild(dl);
 
-      li.append(icon, meta, dl);
+      li.append(icon, metaEl, actions);
       list.appendChild(li);
     }
-    document.getElementById('files-section').hidden = false;
+    section.hidden = false;
   }
 
   document.getElementById('result').hidden = false;
   document.getElementById('show-btn').hidden = true;
   document.getElementById('passphrase-section').hidden = true;
+}
+
+function openPreview(d, kind) {
+  const modal = document.getElementById('preview-modal');
+  const body = document.getElementById('preview-modal-body');
+  document.getElementById('preview-modal-name').textContent = d.name;
+  body.innerHTML = '';
+
+  if (kind === 'image') {
+    const img = document.createElement('img');
+    img.src = d.url;
+    img.alt = d.name;
+    body.appendChild(img);
+  } else if (kind === 'pdf') {
+    const frame = document.createElement('iframe');
+    frame.src = d.url;
+    frame.title = d.name;
+    body.appendChild(frame);
+  } else if (kind === 'text') {
+    const pre = document.createElement('pre');
+    pre.textContent = new TextDecoder().decode(d.bytes);
+    body.appendChild(pre);
+  }
+  modal.showModal();
+}
+
+function downloadZip(decoded, btn) {
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = strings['view.zipBuilding'] || 'ZIP wird erzeugt …';
+  // Kurzer Tick, damit der Button-State rendert, bevor zipSync den Main-Thread belegt.
+  setTimeout(() => {
+    try {
+      const blob = buildZipBlob(decoded.map((d) => ({ name: d.name, bytes: d.bytes })));
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = strings['view.zipName'] || 'dateien.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }, 30);
 }
 
 function showError(msg) {
