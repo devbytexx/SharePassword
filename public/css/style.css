@@ -1111,6 +1111,19 @@ pre.plaintext {
   white-space: pre-line;   /* \n im Button-Text wird zum Zeilenumbruch */
   text-align: center;
 }
+.view-promo__arrow {
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--brand-orange);
+  animation: promo-arrow-blink 1.1s ease-in-out infinite;
+}
+@keyframes promo-arrow-blink {
+  0%, 100% { opacity: 1;    transform: translateY(0); }
+  50%      { opacity: 0.25; transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .view-promo__arrow { animation: none; }
+}
 .view-promo__hint {
   margin: 0;
   font-size: 0.85rem;
