@@ -1,4 +1,4 @@
--- SharePassword schema. Idempotent. Run as DB admin.
+-- ShareSecret schema. Idempotent. Run as DB admin.
 CREATE DATABASE IF NOT EXISTS sharepassword
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

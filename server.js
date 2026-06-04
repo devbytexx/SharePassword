@@ -4,7 +4,7 @@ const app = await buildApp();
 
 try {
   await app.listen({ port: app.config.port, host: app.config.bind });
-  app.log.info(`SharePassword listening on ${app.config.bind}:${app.config.port}`);
+  app.log.info(`ShareSecret listening on ${app.config.bind}:${app.config.port}`);
 } catch (err) {
   app.log.error(err);
   process.exit(1);

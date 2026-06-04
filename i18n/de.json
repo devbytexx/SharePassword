@@ -48,7 +48,7 @@
   "create.new": "Neues Secret",
   "create.expiresAt": "Gültig bis",
   "create.mailSubject": "Sicheres Secret von secret.bytexx.de",
-  "create.mailBody": "{greeting}\n\n🔐 ich habe ein verschlüsseltes Secret für Sie hinterlegt.\n{hintLine}\nSie erreichen es über folgenden Link:\n\n🔗 {url}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{expiresLine}{burnLine}{passphraseLine}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nℹ️ Der Link wurde mit SharePassword, einem kostenfreien Dienst von Bytexx Inh. Rico Becker (https://secret.bytexx.de), erzeugt.\n       Ende-zu-Ende-Verschlüsselung im Browser. Der Server kann keine Inhalte lesen.\n\nViele Grüße\n{senderSignature}",
+  "create.mailBody": "{greeting}\n\n🔐 ich habe ein verschlüsseltes Secret für Sie hinterlegt.\n{hintLine}\nSie erreichen es über folgenden Link:\n\n🔗 {url}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{expiresLine}{burnLine}{passphraseLine}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nℹ️ Der Link wurde mit ShareSecret, einem kostenfreien Dienst von Bytexx Inh. Rico Becker (https://secret.bytexx.de), erzeugt.\n       Ende-zu-Ende-Verschlüsselung im Browser. Der Server kann keine Inhalte lesen.\n\nViele Grüße\n{senderSignature}",
   "create.mailGreeting": "Hallo,",
   "create.mailGreetingWithName": "Hallo {name},",
   "create.mailHint": "\n  ┃ 💡 Hinweis vom Absender:\n  ┃ {hint}\n  ┃\n",

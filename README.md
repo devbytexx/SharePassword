@@ -1,4 +1,4 @@
-# SharePassword
+# ShareSecret
 
 Selbst-gehostetes One-Time-Secret-Tool von [BYTEXX IT](https://bytexx.de). Ende-zu-Ende-verschlüsselt im Browser — der Server sieht den Klartext zu keinem Zeitpunkt.
 
@@ -41,8 +41,8 @@ Selbst-gehostetes One-Time-Secret-Tool von [BYTEXX IT](https://bytexx.de). Ende-
 ## Lokal entwickeln
 
 ```bash
-git clone https://github.com/devbytexx/SharePassword.git
-cd SharePassword
+git clone https://github.com/devbytexx/ShareSecret.git
+cd ShareSecret
 npm install
 cp .env.example .env       # Werte ausfüllen
 npm start

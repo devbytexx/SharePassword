@@ -48,7 +48,7 @@
   "create.new": "New secret",
   "create.expiresAt": "Valid until",
   "create.mailSubject": "Secure secret from secret.bytexx.de",
-  "create.mailBody": "{greeting}\n\n🔐 I have stored an encrypted secret for you.\n{hintLine}\nYou can retrieve it via this link:\n\n🔗 {url}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{expiresLine}{burnLine}{passphraseLine}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nℹ️ The link was created with SharePassword, a free service by Bytexx (Inh. Rico Becker, https://secret.bytexx.de).\n       End-to-end encrypted in the browser. The server cannot read any content.\n\nBest regards\n{senderSignature}",
+  "create.mailBody": "{greeting}\n\n🔐 I have stored an encrypted secret for you.\n{hintLine}\nYou can retrieve it via this link:\n\n🔗 {url}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n{expiresLine}{burnLine}{passphraseLine}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nℹ️ The link was created with ShareSecret, a free service by Bytexx (Inh. Rico Becker, https://secret.bytexx.de).\n       End-to-end encrypted in the browser. The server cannot read any content.\n\nBest regards\n{senderSignature}",
   "create.mailGreeting": "Hello,",
   "create.mailGreetingWithName": "Hello {name},",
   "create.mailHint": "\n  ┃ 💡 Hint from the sender:\n  ┃ {hint}\n  ┃\n",
