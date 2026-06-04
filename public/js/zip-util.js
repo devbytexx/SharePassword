@@ -6,24 +6,23 @@
 import { zipSync } from './vendor/fflate.module.js';
 
 // Macht Dateinamen eindeutig: "a.txt", "a.txt" → "a.txt", "a (2).txt".
+// Prüft gegen die bereits VERGEBENEN Namen (nicht nur die Eingaben), damit ein
+// generierter Name nicht mit einem vorhandenen Eingabe-Namen kollidiert und
+// fflate eine Datei still überschreibt.
 export function dedupeFileNames(names) {
-  const counts = new Map();
-  const out = [];
-  for (const original of names) {
+  const seen = new Set();
+  return names.map((original) => {
     const name = original || 'datei';
-    if (!counts.has(name)) {
-      counts.set(name, 1);
-      out.push(name);
-      continue;
-    }
-    const n = counts.get(name) + 1;
-    counts.set(name, n);
+    if (!seen.has(name)) { seen.add(name); return name; }
     const dot = name.lastIndexOf('.');
     const base = dot > 0 ? name.slice(0, dot) : name;
     const ext = dot > 0 ? name.slice(dot) : '';
-    out.push(`${base} (${n})${ext}`);
-  }
-  return out;
+    let n = 2;
+    let candidate;
+    do { candidate = `${base} (${n++})${ext}`; } while (seen.has(candidate));
+    seen.add(candidate);
+    return candidate;
+  });
 }
 
 // files: [{ name: string, bytes: Uint8Array }] → ZIP als Uint8Array.

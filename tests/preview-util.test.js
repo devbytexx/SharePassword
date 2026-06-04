@@ -26,3 +26,8 @@ test('Unbekannte Typen → null (nur Download)', () => {
   assert.equal(classifyPreview('application/octet-stream', 'data.bin'), null);
   assert.equal(classifyPreview('', 'ohneendung'), null);
 });
+
+test('null-MIME-Typ nutzt den Endungs-Fallback', () => {
+  assert.equal(classifyPreview(null, 'foto.png'), 'image');
+  assert.equal(classifyPreview(null, 'unbekannt'), null);
+});

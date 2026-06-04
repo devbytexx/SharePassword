@@ -42,3 +42,10 @@ test('zipFiles entschärft doppelte Dateinamen', () => {
   const out = unzipSync(zipFiles(files));
   assert.deepEqual(Object.keys(out).sort(), ['x (2).txt', 'x.txt']);
 });
+
+test('dedupeFileNames kollidiert nicht mit bereits vorhandenen "(n)"-Namen', () => {
+  assert.deepEqual(
+    dedupeFileNames(['a (2).txt', 'a.txt', 'a.txt']),
+    ['a (2).txt', 'a.txt', 'a (3).txt']
+  );
+});
