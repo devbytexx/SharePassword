@@ -52,9 +52,11 @@ let keyMaterial = null;
   if (modal) {
     document.getElementById('preview-modal-close')
       .addEventListener('click', () => modal.close());
-    // Body beim Schließen leeren (stoppt z. B. PDF-Rendering im iframe)
+    // Body beim Schließen leeren (stoppt z. B. PDF-Rendering im iframe).
+    // Das close-Event feuert asynchron — nur leeren, wenn das Modal wirklich
+    // geschlossen bleibt, damit ein sofortiges Wieder-Öffnen nicht geleert wird.
     modal.addEventListener('close', () => {
-      document.getElementById('preview-modal-body').innerHTML = '';
+      if (!modal.open) document.getElementById('preview-modal-body').innerHTML = '';
     });
   }
 })();
