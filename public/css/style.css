@@ -1102,10 +1102,15 @@ pre.plaintext {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  margin: 1.4rem auto 0;
+  margin: 4rem auto 0;   /* deutlich tiefer unter der Card */
   text-align: center;
 }
-.view-promo__btn { max-width: 100%; overflow-wrap: anywhere; }
+.view-promo__btn {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-line;   /* \n im Button-Text wird zum Zeilenumbruch */
+  text-align: center;
+}
 .view-promo__hint {
   margin: 0;
   font-size: 0.85rem;
