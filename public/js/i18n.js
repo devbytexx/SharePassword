@@ -1,4 +1,7 @@
 const LANG_KEY = 'sp.lang';
+// Bei jeder Änderung an de.json/en.json hochzählen, damit Browser/Proxy die
+// neuen Strings laden statt eine gecachte Version auszuliefern.
+const I18N_VERSION = '20260604-3';
 
 export function currentLang(defaultLang = 'de') {
   return localStorage.getItem(LANG_KEY) || defaultLang;
@@ -10,7 +13,7 @@ export function setLang(lang) {
 }
 
 export async function loadStrings(lang) {
-  const res = await fetch(`/i18n/${lang}.json`);
+  const res = await fetch(`/i18n/${lang}.json?v=${I18N_VERSION}`);
   if (!res.ok) throw new Error('i18n load failed');
   return res.json();
 }

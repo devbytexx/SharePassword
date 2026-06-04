@@ -317,6 +317,10 @@ async function handleSubmit() {
     if (status === 400 && errCode === 'honeypot') {
       throw new Error(strings['create.error.honeypot'] || 'Anfrage abgelehnt.');
     }
+    if (status === 413) {
+      throw new Error(strings['create.error.tooLargeServer']
+        || 'Die verschlüsselten Daten sind zu groß für den Server. Bitte kleinere Dateien wählen (max. 25 MB gesamt).');
+    }
     if (status) throw new Error(`Fehler ${status}`);
     throw new Error(strings['create.error.network'] || 'Netzwerkfehler. Bitte erneut versuchen.');
   }

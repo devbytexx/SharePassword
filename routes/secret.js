@@ -14,7 +14,7 @@ const createSchema = {
     required: ['ciphertext', 'expiresIn', 'burnAfterRead', 'hasPassphrase'],
     additionalProperties: false,
     properties: {
-      ciphertext:     { type: 'string', minLength: 1, maxLength: 34 * 1024 * 1024 },
+      ciphertext:     { type: 'string', minLength: 1, maxLength: 48 * 1024 * 1024 },
       expiresIn:      { type: 'integer', enum: [3600, 86400, 604800, 2592000] },
       burnAfterRead:  { type: 'boolean' },
       hasPassphrase:  { type: 'boolean' },
@@ -66,7 +66,10 @@ export default async function secretRoutes(app) {
 
     const ciphertext = Buffer.from(b.ciphertext, 'base64');
     if (ciphertext.length === 0) return reply.code(400).send({ error: 'empty ciphertext' });
-    if (ciphertext.length > 25 * 1024 * 1024 + 4096) {
+    // 25 MB Dateien werden durch Base64 (Datei→JSON) + Verschlüsselung zu
+    // ~33 MB Ciphertext. 36 MB lässt etwas Reserve für Text. Muss zur
+    // Client-Grenze (25 MB Dateien) und zum Schema-maxLength oben passen.
+    if (ciphertext.length > 36 * 1024 * 1024) {
       return reply.code(413).send({ error: 'ciphertext too large' });
     }
 
