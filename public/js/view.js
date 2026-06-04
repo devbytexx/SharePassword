@@ -197,6 +197,7 @@ function openPreview(d, kind) {
     const frame = document.createElement('iframe');
     frame.src = d.url;
     frame.title = d.name;
+    frame.sandbox = 'allow-scripts';
     body.appendChild(frame);
   } else if (kind === 'text') {
     const pre = document.createElement('pre');
