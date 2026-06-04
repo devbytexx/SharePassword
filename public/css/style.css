@@ -1096,17 +1096,28 @@ pre.plaintext {
   background: rgba(36, 83, 152, 0.08);
 }
 
-/* Cross-Promo-Link unter der Card (Empfänger-Seite) */
+/* Cross-Promo unter der Card (Empfänger-Seite) */
 .view-promo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.4rem auto 0;
   text-align: center;
-  margin: 1.2rem auto 0;
-  font-size: 0.95rem;
-  overflow-wrap: anywhere;
 }
-.view-promo a {
-  color: var(--brand-orange);
-  font-weight: 600;
+.view-promo__btn { max-width: 100%; overflow-wrap: anywhere; }
+.view-promo__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--fg-muted);
 }
-.view-promo a:hover { color: var(--brand-orange-dark); }
+.view-promo__hint kbd {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  padding: 0.05rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(36, 83, 152, 0.08);
+}
 
 [hidden] { display: none !important; }
