@@ -63,6 +63,8 @@
   "view.passphrasePrompt": "This secret is protected by a passphrase.",
   "view.passphraseLabel": "Passphrase",
   "view.submit": "Show",
+  "view.decrypting": "Decrypting …",
+  "view.promo": "Use our service too for sending secrets easily and securely →",
   "view.burnedNote": "This secret has been deleted and cannot be retrieved again.",
   "view.fileDownload": "Download",
   "view.filePreview": "Preview",

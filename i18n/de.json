@@ -63,6 +63,8 @@
   "view.passphrasePrompt": "Dieses Geheimnis ist mit einer Passphrase geschützt.",
   "view.passphraseLabel": "Passphrase",
   "view.submit": "Anzeigen",
+  "view.decrypting": "Entschlüssele …",
+  "view.promo": "Nutzen Sie auch unseren Dienst zum einfachen, sicheren Versenden von Geheimnissen →",
   "view.burnedNote": "Dieses Geheimnis wurde gelöscht und kann nicht erneut abgerufen werden.",
   "view.fileDownload": "Herunterladen",
   "view.filePreview": "Vorschau",

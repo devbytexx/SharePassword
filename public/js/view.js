@@ -62,11 +62,25 @@ let keyMaterial = null;
 })();
 
 async function onShow(token) {
+  const btn = document.getElementById('show-btn');
+  // Ohne eingegebene Passphrase nichts tun (Button bleibt aktiv).
+  if (meta.hasPassphrase && !document.getElementById('passphrase').value) return;
+
+  // Button sperren + Hinweis anzeigen, damit nicht doppelt geklickt wird und
+  // klar ist, dass gerade entschlüsselt wird (bei großen Dateien dauert das).
+  const origLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = strings['view.decrypting'] || 'Entschlüssele …';
+  // Einen Tick warten, damit der Button-State sichtbar wird, bevor die
+  // (bei großen Dateien blockierende) Entschlüsselung läuft.
+  await new Promise((r) => setTimeout(r, 30));
+
+  const resetButton = () => { btn.disabled = false; btn.textContent = origLabel; };
+
   try {
     let rawKey = keyMaterial;
     if (meta.hasPassphrase) {
       const pass = document.getElementById('passphrase').value;
-      if (!pass) return;
       const salt = base64ToBytes(meta.passphraseSalt);
       const kek = await deriveKekFromPassphrase(pass, salt);
       rawKey = unwrapKey(keyMaterial, kek);
@@ -80,16 +94,18 @@ async function onShow(token) {
       plaintextBytes = await decryptBytes(ct, cryptoKey);
     } catch {
       fetch(`/api/secret/${token}/attempt`, { method: 'POST' }).catch(() => {});
+      resetButton();
       showError(strings['view.error.wrongPassphrase']); return;
     }
     const json = JSON.parse(new TextDecoder().decode(plaintextBytes));
-    render(json);
+    render(json);   // versteckt den Button
 
     if (meta.burnAfterRead) {
       fetch(`/api/secret/${token}/burn`, { method: 'POST' }).catch(() => {});
     }
   } catch (err) {
     console.error(err);
+    resetButton();
     showError(String(err));
   }
 }
@@ -118,7 +134,11 @@ function render(json) {
       const bytes = base64ToBytes(f.data);
       const type = f.type || 'application/octet-stream';
       const url = URL.createObjectURL(new Blob([bytes], { type }));
-      return { name: f.name || 'datei', type, bytes, url };
+      const kind = classifyPreview(type, f.name);
+      // Bilder als data:-URL — in der CSP immer erlaubt, also unabhängig vom
+      // blob:-CSP-Stand. f.data ist bereits die Base64-Form der Datei.
+      const dataUrl = kind === 'image' ? `data:${type};base64,${f.data}` : null;
+      return { name: f.name || 'datei', type, bytes, url, kind, dataUrl };
     });
 
     // "Alle als ZIP herunterladen" — nur ab 2 Dateien.
@@ -137,9 +157,17 @@ function render(json) {
     for (const d of decoded) {
       const li = document.createElement('li');
 
-      const icon = document.createElement('span');
-      icon.className = 'file-icon';
-      icon.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+      let icon;
+      if (d.kind === 'image' && d.dataUrl) {
+        icon = document.createElement('img');
+        icon.className = 'file-thumb';
+        icon.src = d.dataUrl;
+        icon.alt = '';
+      } else {
+        icon = document.createElement('span');
+        icon.className = 'file-icon';
+        icon.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+      }
 
       const metaEl = document.createElement('div');
       metaEl.className = 'file-meta';
@@ -154,7 +182,7 @@ function render(json) {
       const actions = document.createElement('div');
       actions.className = 'file-actions';
 
-      const kind = classifyPreview(d.type, d.name);
+      const kind = d.kind;
       if (kind) {
         const pv = document.createElement('button');
         pv.type = 'button';
@@ -190,14 +218,15 @@ function openPreview(d, kind) {
 
   if (kind === 'image') {
     const img = document.createElement('img');
-    img.src = d.url;
+    img.src = d.dataUrl || d.url;
     img.alt = d.name;
     body.appendChild(img);
   } else if (kind === 'pdf') {
     const frame = document.createElement('iframe');
     frame.src = d.url;
     frame.title = d.name;
-    frame.sandbox = 'allow-scripts';
+    // KEIN sandbox: sandbox ohne allow-same-origin blockiert das Laden der
+    // blob:-URL (gehört der Parent-Origin) → das PDF bliebe leer.
     body.appendChild(frame);
   } else if (kind === 'text') {
     const pre = document.createElement('pre');

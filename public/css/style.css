@@ -631,10 +631,14 @@ details.advanced > .advanced__lead {
 
 .btn--ghost {
   background: transparent;
-  color: var(--brand-blue);
-  border-color: var(--border-strong);
+  color: var(--brand-orange);
+  border-color: var(--brand-orange);
 }
-.btn--ghost:hover:not(:disabled) { border-color: var(--brand-blue); background: rgba(36,83,152,0.06); }
+.btn--ghost:hover:not(:disabled) {
+  border-color: var(--brand-orange-dark);
+  color: var(--brand-orange-dark);
+  background: rgba(245, 132, 31, 0.10);
+}
 
 .btn--ghost-orange {
   background: transparent;
@@ -1080,5 +1084,29 @@ pre.plaintext {
 }
 /* "Alle als ZIP"-Button über der Liste */
 .files-zip { margin: 0 0 0.8rem; }
+
+/* Thumbnail für Bild-Anhänge (ersetzt das generische Datei-Icon) */
+.files-list .file-thumb {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: rgba(36, 83, 152, 0.08);
+}
+
+/* Cross-Promo-Link unter der Card (Empfänger-Seite) */
+.view-promo {
+  text-align: center;
+  margin: 1.2rem auto 0;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+.view-promo a {
+  color: var(--brand-orange);
+  font-weight: 600;
+}
+.view-promo a:hover { color: var(--brand-orange-dark); }
 
 [hidden] { display: none !important; }
