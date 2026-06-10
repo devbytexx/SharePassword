@@ -1,6 +1,7 @@
 import {
   insertSecret, getSecret, deleteSecret,
-  logAttempt, countRecentAttempts
+  logAttempt, countRecentAttempts,
+  incrementCounter, getCounters
 } from '../lib/storage.js';
 import { generateToken, hashIp, tokenToBase64Url, base64UrlToToken }
   from '../lib/crypto-utils.js';
@@ -96,11 +97,19 @@ export default async function secretRoutes(app) {
 
     quota.increment(ipHashHex);
 
+    // Nutzungszähler (nur Integer, keine PII) — darf eine erfolgreiche
+    // Erstellung niemals scheitern lassen.
+    try { await incrementCounter('created'); }
+    catch (err) { req.log.warn({ err }, 'created counter failed'); }
+
     return {
       token: tokenToBase64Url(token),
       expiresAt: Math.floor(expiresAt.getTime() / 1000)
     };
   });
+
+  // Öffentliche, anonyme Nutzungsstatistik (nur Gesamtzahlen, keine PII)
+  app.get('/api/stats', async () => getCounters());
 
   const tokenParamSchema = {
     params: {
@@ -148,6 +157,11 @@ export default async function secretRoutes(app) {
 
     const row = await getSecret(tokenBuf);
     const deleted = await deleteSecret(tokenBuf);
+
+    if (deleted) {
+      try { await incrementCounter('viewed'); }
+      catch (err) { req.log.warn({ err }, 'viewed counter failed'); }
+    }
 
     if (deleted && row && row.notify_email) {
       const ipHash = hashIp(req.ip || 'unknown', cfg.ipHashPepper);

@@ -25,6 +25,15 @@ CREATE TABLE IF NOT EXISTS brute_log (
   INDEX idx_token_time (token, attempt_at)
 ) ENGINE=InnoDB;
 
+-- Anonyme Nutzungszähler. Nur Gesamtzahlen, keine PII, kein Bezug zu einzelnen
+-- Secrets — bleibt mit der Ephemeralität vereinbar und darf im Backup bleiben.
+CREATE TABLE IF NOT EXISTS counters (
+  name               VARCHAR(32)      NOT NULL PRIMARY KEY,
+  value              BIGINT UNSIGNED  NOT NULL DEFAULT 0
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO counters (name, value) VALUES ('created', 0), ('viewed', 0);
+
 SET GLOBAL event_scheduler = ON;
 
 DROP EVENT IF EXISTS purge_expired_secrets;

@@ -383,6 +383,16 @@ textarea.hint-textarea {
   user-select: all;             /* damit Doppelklick markiert */
   letter-spacing: 0.02em;
 }
+/* Dezente, anonyme Nutzungsstatistik (Sicherheit-Seite) */
+.usage-stat {
+  margin-top: 2.5rem;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  opacity: 0.7;
+  text-align: center;
+}
+.usage-stat #usage-created { font-weight: 700; }
+
 /* Passphrase-Stärke-Anzeige (rein clientseitig, nicht-blockierend) */
 .pass-strength {
   display: flex;

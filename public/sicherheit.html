@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sicherheit – ShareSecret</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260610-1">
+  <link rel="stylesheet" href="/css/style.css?v=20260610-2">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -100,6 +100,10 @@
       </p>
 
       <p><a class="btn btn--ghost-orange" href="/">← Zurück zum Secret-Erstellen</a></p>
+
+      <p class="usage-stat" id="usage-stat" hidden>
+        Bisher <span id="usage-created">…</span> Secrets über diesen Dienst sicher übertragen.
+      </p>
     </section>
   </main>
 
@@ -112,6 +116,7 @@
   </footer>
 
   <script type="module" src="/js/static-page-init.js"></script>
+  <script type="module" src="/js/stats.js?v=20260610-1"></script>
   <script type="module" src="/js/hexagon.js?v=20260604-4"></script>
 </body>
 </html>
