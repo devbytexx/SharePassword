@@ -5,6 +5,16 @@
 
 import { zipSync } from './vendor/fflate.module.js';
 
+// Zip-Slip-Schutz: Dateinamen stammen aus dem entschlüsselten Payload und sind
+// damit vom Ersteller frei wählbar — ein bösartiger Name wie "..\\..\\evil.bat"
+// würde sonst wörtlich als ZIP-Eintragspfad landen und bei naiven Entpackern
+// außerhalb des Zielordners schreiben. Auf den reinen Basename reduzieren;
+// ":" deckt Windows-Laufwerks-Präfixe ("C:evil.bat") ab.
+export function sanitizeFileName(name) {
+  const base = String(name || '').split(/[\\/:]/).pop();
+  return (base === '.' || base === '..') ? '' : base;
+}
+
 // Macht Dateinamen eindeutig: "a.txt", "a.txt" → "a.txt", "a (2).txt".
 // Prüft gegen die bereits VERGEBENEN Namen (nicht nur die Eingaben), damit ein
 // generierter Name nicht mit einem vorhandenen Eingabe-Namen kollidiert und
@@ -12,7 +22,7 @@ import { zipSync } from './vendor/fflate.module.js';
 export function dedupeFileNames(names) {
   const seen = new Set();
   return names.map((original) => {
-    const name = original || 'datei';
+    const name = sanitizeFileName(original) || 'datei';
     if (!seen.has(name)) { seen.add(name); return name; }
     const dot = name.lastIndexOf('.');
     const base = dot > 0 ? name.slice(0, dot) : name;

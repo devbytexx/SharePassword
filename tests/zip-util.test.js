@@ -49,3 +49,26 @@ test('dedupeFileNames kollidiert nicht mit bereits vorhandenen "(n)"-Namen', () 
     ['a (2).txt', 'a.txt', 'a (3).txt']
   );
 });
+
+test('dedupeFileNames reduziert Pfad-Traversal auf den Basename (Zip Slip)', () => {
+  assert.deepEqual(
+    dedupeFileNames(['..\\..\\evil.bat', '../../etc/passwd', 'dir/sub/x.txt']),
+    ['evil.bat', 'passwd', 'x.txt']
+  );
+});
+
+test('dedupeFileNames entschärft reine Traversal-/Laufwerks-Namen', () => {
+  assert.deepEqual(
+    dedupeFileNames(['..', '.', 'C:evil.bat', '/']),
+    ['datei', 'datei (2)', 'evil.bat', 'datei (3)']
+  );
+});
+
+test('zipFiles schreibt nur sichere Basenames als Eintragspfade', () => {
+  const files = [
+    { name: '..\\..\\Startup\\evil.bat', bytes: enc('boom') },
+    { name: 'ok.txt', bytes: enc('ok') }
+  ];
+  const out = unzipSync(zipFiles(files));
+  assert.deepEqual(Object.keys(out).sort(), ['evil.bat', 'ok.txt']);
+});
