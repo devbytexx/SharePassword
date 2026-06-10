@@ -383,6 +383,37 @@ textarea.hint-textarea {
   user-select: all;             /* damit Doppelklick markiert */
   letter-spacing: 0.02em;
 }
+/* Passphrase-Stärke-Anzeige (rein clientseitig, nicht-blockierend) */
+.pass-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
+.pass-strength__track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  overflow: hidden;
+}
+.pass-strength__fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  transition: width 0.15s, background 0.15s;
+}
+.pass-strength__label { white-space: nowrap; font-weight: 700; }
+.pass-strength[data-level="weak"]   .pass-strength__fill { width: 33%;  background: #e0533d; }
+.pass-strength[data-level="medium"] .pass-strength__fill { width: 66%;  background: #e0a020; }
+.pass-strength[data-level="strong"] .pass-strength__fill { width: 100%; background: #2faa55; }
+.pass-strength[data-level="weak"]   .pass-strength__label { color: #e0533d; }
+.pass-strength[data-level="medium"] .pass-strength__label { color: #c98717; }
+.pass-strength[data-level="strong"] .pass-strength__label { color: #2faa55; }
+
 .btn-mini {
   background: transparent;
   border: 1px solid var(--border-strong);

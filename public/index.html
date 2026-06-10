@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ShareSecret – BYTEXX</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260604-6">
+  <link rel="stylesheet" href="/css/style.css?v=20260610-1">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -102,6 +102,10 @@
               <button type="button" id="pass-show" class="link-mini" data-i18n="create.passphraseShow">Anzeigen</button>
             </div>
             <input type="password" id="passphrase" autocomplete="new-password">
+            <div class="pass-strength" id="pass-strength" hidden aria-live="polite">
+              <span class="pass-strength__track"><span class="pass-strength__fill"></span></span>
+              <span class="pass-strength__label" id="pass-strength-label"></span>
+            </div>
             <div class="pass-suggest">
               <span class="pass-suggest__label" data-i18n="create.passphraseSuggestLabel">Vorschlag:</span>
               <code id="pass-suggest-text" class="pass-suggest__code"></code>
@@ -195,7 +199,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="/js/create.js?v=20260604-3"></script>
+  <script type="module" src="/js/create.js?v=20260610-1"></script>
   <script type="module" src="/js/hexagon.js?v=20260604-4"></script>
 </body>
 </html>

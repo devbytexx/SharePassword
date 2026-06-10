@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sicherheit – ShareSecret</title>
   <script src="/js/theme-init.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=20260604-2">
+  <link rel="stylesheet" href="/css/style.css?v=20260610-1">
   <link rel="icon" type="image/png" href="/img/bytexx-logo.png">
 </head>
 <body>
@@ -46,7 +46,7 @@
           <ul>
             <li><strong>Rate-Limits:</strong> 10 POST/Min, 30 GET/Min und 20 Versuche/Min pro IP-Adresse.</li>
             <li><strong>Tageslimit:</strong> 24 Secrets pro IP pro Tag.</li>
-            <li><strong>Brute-Force-Schutz:</strong> Nach 5 falschen Passphrasen wird der Token 15 Minuten gesperrt.</li>
+            <li><strong>Online-Raten-Bremse:</strong> Nach 5 falschen Passphrasen über die Oberfläche wird der Token 15 Minuten gesperrt. Das bremst nur naives Raten über die Web-Oberfläche. Der eigentliche Schutz gegen Brute-Force ist eine <strong>starke Passphrase</strong> in Verbindung mit PBKDF2 (600 000 Iterationen pro Versuch) — die Stärke-Anzeige beim Erstellen hilft dabei.</li>
             <li><strong>25 MB Gesamtlimit</strong> pro Secret (alle Dateien + Text zusammen).</li>
             <li><strong>Honeypot</strong> gegen automatisierte Bot-Submissions.</li>
             <li><strong>Strikte Content-Security-Policy</strong>, HSTS, X-Frame-Options DENY, kein Tracking.</li>

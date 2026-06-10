@@ -4,6 +4,7 @@ import {
   bytesToBase64Url, bytesToBase64
 } from '/js/crypto.js';
 import { initThemeToggle } from '/js/theme.js';
+import { passphraseStrength } from '/js/pass-strength.js';
 
 initThemeToggle();
 
@@ -73,9 +74,24 @@ function setupPassphraseSuggest() {
   regen();
   regenBtn.addEventListener('click', regen);
 
+  // Live-Stärke-Anzeige — der eigentliche Schutz gegen Offline-Raten ist eine
+  // starke Passphrase, nicht der serverseitige Lock. Daher Nutzer hier anleiten.
+  const meter = document.getElementById('pass-strength');
+  const meterLabel = document.getElementById('pass-strength-label');
+  const updateStrength = () => {
+    if (!meter || !meterLabel) return;
+    const { level } = passphraseStrength(input.value);
+    if (level === 'empty') { meter.hidden = true; meter.removeAttribute('data-level'); return; }
+    meter.hidden = false;
+    meter.dataset.level = level;
+    meterLabel.textContent = strings['create.passStrength.' + level] || level;
+  };
+  input.addEventListener('input', updateStrength);
+
   applyBtn.addEventListener('click', () => {
     input.value = codeEl.textContent;
     input.focus();
+    updateStrength();
   });
 
   // Anzeigen/Verbergen-Toggle oben rechts neben dem Label
